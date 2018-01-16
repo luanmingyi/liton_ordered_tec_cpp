@@ -93,6 +93,24 @@ namespace liton_sp
 			out << debug_mode << std::endl;
 		}
 	}
+
+	namespace debug
+	{
+		template<typename Expression>
+		void exec_except(Expression exp, ostream &out, ostream &except_out)
+		{
+			try
+			{
+				exp();
+				out << "no exception" << std::endl;
+			}
+			catch (const std::exception &err)
+			{
+				out << "with exception" << std::endl;
+				except_out << err.what() << std::endl;
+			}
+		}
+	}
 }
 
 #endif
