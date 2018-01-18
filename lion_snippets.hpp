@@ -97,7 +97,7 @@ namespace liton_sp
 	namespace debug
 	{
 		template<typename Expression>
-		void exec_except(Expression exp, ostream &out, ostream &except_out)
+		void exec_except(const Expression &exp, ostream &out, ostream &except_out)
 		{
 			try
 			{
@@ -109,6 +109,20 @@ namespace liton_sp
 				out << "with exception" << std::endl;
 				except_out << err.what() << std::endl;
 			}
+		}
+
+		template<typename Expression>
+		double exec_time(const unsigned &N, const Expression &exp)
+		{
+			double t = 0;
+			for (unsigned i = 0; i != N; ++i)
+			{
+				clock_t clock_begin = clock();
+				exp();
+				t += static_cast<double>(clock() - clock_begin) / CLOCKS_PER_SEC;
+			}
+			t /= static_cast<double>(N);
+			return t;
 		}
 	}
 }
