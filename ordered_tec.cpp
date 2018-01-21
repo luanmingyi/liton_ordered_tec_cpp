@@ -16,7 +16,7 @@
 #define TEC_FLOAT32_S 4
 #define TEC_FLOAT64_S 8
 
-using namespace liton;
+using namespace liton_ot;
 
 inline void W_INT32(const INT32 &a, FILE *f)
 {
