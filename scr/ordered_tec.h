@@ -1,5 +1,5 @@
-# ifndef ORDERED_TEC_HEAD
-# define ORDERED_TEC_HEAD
+# ifndef ORDERED_TEC_H
+# define ORDERED_TEC_H
 
 #include<cstddef>
 #include<string>
@@ -11,13 +11,13 @@
 #include<stdexcept>
 #include"tinyxml2.h"
 
-namespace liton
+namespace liton_ot
 {
 	typedef int INT32;
 	typedef float FLOAT32;
 	typedef double FLOAT64;
 
-	typedef signed long int longint;
+	typedef signed int longint;
 	typedef signed short int shortint;
 	typedef signed char byte;
 
@@ -222,7 +222,7 @@ namespace liton
 	};
 }
 
-template<typename T> liton::TEC_DATA::TEC_DATA(T * iDataP)
+template<typename T> liton_ot::TEC_DATA::TEC_DATA(T * iDataP)
 {
 	if (typeid(iDataP) == typeid(float *))
 	{
