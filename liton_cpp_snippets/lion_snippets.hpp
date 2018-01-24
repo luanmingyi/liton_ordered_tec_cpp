@@ -1,6 +1,7 @@
 #ifndef LITON_SNIPPET_HPP
 #define LITON_SNIPPET_HPP
 
+#include <iostream>
 #include <cstdio>
 #include <string>
 #include <stdexcept>
@@ -51,38 +52,38 @@ namespace liton_sp
 	namespace env
 	{
 #ifdef _WIN32
-		const char os[] = "Windows 32 or Windows 64";
+	const char os[] = "Windows 32 or Windows 64";
 #elif _WIN64
-		const char os[] = "Windows 64";
+	const char os[] = "Windows 64";
 #elif __MINGW32__
-		const char os[] = "Windows32 by mingw compiler";
+	const char os[] = "Windows32 by mingw compiler";
 #elif __CYGWIN__
-		const char os[] = "Cygwin";
+	const char os[] = "Cygwin";
 #elif __linux__
-		const char os[] = "linux";
+	const char os[] = "linux";
 #endif
 
 #ifdef __INTEL_COMPILER
-		const char compiler[] = "Interl C++";
+	const char compiler[] = "Interl C++";
 #elif _MSC_VER
-		const char compiler[] = "Visual C++";
+	const char compiler[] = "Visual C++";
 #elif __GNUC__
-		const char compiler[] = "GCC";
+	const char compiler[] = "GCC";
 #endif
 
 #if (__cplusplus < 201103L && !defined(_MSC_VER)) || (defined(_MSC_VER) && (_MSC_VER < 1700))
-		const char cpp_std[] = "C++03";
+	const char cpp_std[] = "C++03";
 #else
-		const char cpp_std[] = "C++11";
+	const char cpp_std[] = "C++11";
 #endif
 
 #if defined(_DEBUG) || defined(DEBUG)
-#ifndef _DEBUG
-#define _DEBUG
-#endif
-		const char debug_mode[] = "DEBUG";
+	#ifndef _DEBUG
+		#define _DEBUG
+	#endif
+	const char debug_mode[] = "DEBUG";
 #elif defined(_NDEBUG) || !defined(_DEBUG)
-		const char debug_mode[] = "RELEASE";
+	const char debug_mode[] = "RELEASE";
 #endif
 
 		void disp_env(std::ostream &out)
@@ -97,7 +98,7 @@ namespace liton_sp
 	namespace debug
 	{
 		template<typename Expression>
-		void exec_except(const Expression &exp, ostream &out, ostream &except_out)
+		void exec_except(const Expression &exp, std::ostream &out, std::ostream &except_out)
 		{
 			try
 			{
