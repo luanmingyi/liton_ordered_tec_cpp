@@ -1,3 +1,3 @@
 # 使用说明 {#usage}
-\example test_01/order_tec_test_01.cpp
+\example ../test/Test_single_zone/Test_single_zone.cpp
 这里是一个最简单的使用例子。

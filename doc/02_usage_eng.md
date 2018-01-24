@@ -1,4 +1,4 @@
 # Usage {#usage}
-\example test_01/order_tec_test_01.cpp
+\example ../test/Test_single_zone/Test_single_zone.cpp
 This is the simplest using example.
 And so on.

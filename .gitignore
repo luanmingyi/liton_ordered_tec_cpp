@@ -29,3 +29,5 @@ test/Test_zone_size/Release/
 test/Test_single_zone/Debug/
 test/Test_single_zone/Release/
 *.bat
+doc/eng/
+doc/chs/
