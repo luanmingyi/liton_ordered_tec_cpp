@@ -1,7 +1,11 @@
 #ifndef LITON_SNIPPET_HPP
 #define LITON_SNIPPET_HPP
 
+#include <cstdlib>
 #include <cstdio>
+
+#include <sstream>
+#include <iomanip>
 #include <string>
 #include <stdexcept>
 #include <ctime>
@@ -99,15 +103,18 @@ namespace liton_sp
 		template<typename Expression>
 		void exec_except(const Expression &exp, ostream &out, ostream &except_out)
 		{
+			ostringstream tran;
+			tran << std::setw(10) << std::setfill('0') << std::rand();
+			std::string timestr = "[" + time::get_time() + "|" + tran.str() + "]: ";
 			try
 			{
 				exp();
-				out << "no exception" << std::endl;
+				out << timestr << "no exception" << std::endl;
 			}
 			catch (const std::exception &err)
 			{
-				out << "with exception" << std::endl;
-				except_out << err.what() << std::endl;
+				out << timestr << "with exception" << std::endl;
+				except_out << timestr << err.what() << std::endl;
 			}
 		}
 
