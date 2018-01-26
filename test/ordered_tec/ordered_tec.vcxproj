@@ -20,11 +20,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\scr\ordered_tec.h" />
-    <ClInclude Include="..\..\scr\tinyxml2.h" />
+    <ClInclude Include="..\..\tinyxml2\tinyxml2.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\scr\ordered_tec.cpp" />
-    <ClCompile Include="..\..\scr\tinyxml2.cpp" />
+    <ClCompile Include="..\..\tinyxml2\tinyxml2.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C3D4AE20-FE0C-45AE-BAF8-104EA426627B}</ProjectGuid>
