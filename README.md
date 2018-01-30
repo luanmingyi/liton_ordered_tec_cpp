@@ -20,19 +20,19 @@ Ordered_tec is a simple pack writing ordered data (structural data) to a binary 
 ## Usage
 
 ### Download and Configuration
-You only need to download the two files in the folder `source` for using this package.
+You only need to add the two folders `scr` and `liton_cpp_snippets` for using this package.
 
-Before using it in your project, you need to copy the two files into your project directory or somewhere else to make sure that the complier could find it. 
+Before using it in your project, you need to copy the two folders into your project directory or somewhere else to make sure that the complier could find it. 
 
 ### Coding
 The Tecplot file consists of zones and data are storage in zone. Zones describe different set of data in space or in time. All the numbers of data in different zones in one file are same. Auxiliary data is extra data attached to file or zone which can be seen and used in Tecplot.
 
-There are six classes usually used included in the `ORDERED_TEC` namespace. They are `TEC_FILE`, `TEC_ZONE`, `TEC_DATA` and correspondingly `TEC_FILE_LOG`, `TEC_ZONE_LOG`, `TEC_DATA_LOG` used to contain log.
+There are six classes usually used included in the `liton_ot` namespace. They are `TEC_FILE`, `TEC_ZONE`, `TEC_DATA` and correspondingly `TEC_FILE_LOG`, `TEC_ZONE_LOG`, `TEC_DATA_LOG` used to contain log.
 
 To use the package, first you need some including and namespace declaration.
 ```c++
 # include "ordered_tec.h"
-using namespace ORDERED_TEC;
+using namespace liton_ot;
 ```
 
 Then you need to declare a `TEC_FILE` object and set its properties. The property `Variables` is a string vector containing the variables' name which is required.
