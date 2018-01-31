@@ -102,7 +102,7 @@ namespace liton_sp
 	namespace debug
 	{
 		template<typename Expression>
-		void exec_except(const Expression &exp, ostream &out, ostream &except_out)
+		void exec_except(const Expression &exp, std::ostream &out, std::ostream &except_out)
 		{
 			ostringstream tran;
 			tran << std::setw(10) << std::setfill('0') << std::rand();
