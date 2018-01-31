@@ -2,7 +2,7 @@
 # include <fstream>
 # include <cstdlib>
 using namespace std;
-# include "../../tinyxml2/tinyxml2.h"
+# include "../../dep/tinyxml2/tinyxml2.h"
 # include "../../scr/ordered_tec.h"
 using namespace liton_ot;
 

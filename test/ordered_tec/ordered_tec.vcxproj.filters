@@ -18,7 +18,7 @@
     <ClInclude Include="..\..\scr\ordered_tec.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinyxml2\tinyxml2.h">
+    <ClInclude Include="..\..\dep\tinyxml2\tinyxml2.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -26,7 +26,7 @@
     <ClCompile Include="..\..\scr\ordered_tec.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinyxml2\tinyxml2.cpp">
+    <ClCompile Include="..\..\dep\tinyxml2\tinyxml2.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
