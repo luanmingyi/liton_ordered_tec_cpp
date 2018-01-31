@@ -9,7 +9,7 @@
 #include<fstream>
 #include<typeinfo>
 #include<stdexcept>
-#include"../tinyxml2/tinyxml2.h"
+#include"../dep/tinyxml2/tinyxml2.h"
 
 /**
  * @brief 

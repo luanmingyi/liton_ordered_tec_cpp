@@ -9,9 +9,9 @@
 #include<ctime>
 #include<cerrno>
 
-#include"../tinyxml2/tinyxml2.h"
+#include"../dep/tinyxml2/tinyxml2.h"
+#include"../dep/liton_cpp_snippets/lion_snippets.hpp"
 #include"ordered_tec.h"
-#include"../liton_cpp_snippets/lion_snippets.hpp"
 
 #define TEC_INT32_S 4
 #define TEC_FLOAT32_S 4
