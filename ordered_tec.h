@@ -67,6 +67,11 @@ namespace liton_ot
 		INT32 Real_Dim;///.
 		bool noskip, noexc;///.
 		std::map<std::string, std::string> Auxiliary;///.
+	  public:
+		inline INT32 & Max_C(const unsigned DIM, const unsigned &d) { return Max[DIM - 1 - d]; }
+		inline INT32 & Begin_C(const unsigned DIM, const unsigned &d) { return Begin[DIM - 1 - d]; }
+		inline INT32 & End_C(const unsigned DIM, const unsigned &d) { return End[DIM - 1 - d]; }
+		inline INT32 & Skip_C(const unsigned DIM, const unsigned &d) { return Skip[DIM - 1 - d]; }
 	};
 
 	class TEC_DATA_BASE
