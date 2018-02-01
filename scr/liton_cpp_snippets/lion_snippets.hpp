@@ -104,7 +104,7 @@ namespace liton_sp
 		template<typename Expression>
 		void exec_except(const Expression &exp, std::ostream &out, std::ostream &except_out)
 		{
-			ostringstream tran;
+			std::ostringstream tran;
 			tran << std::setw(10) << std::setfill('0') << std::rand();
 			std::string timestr = "[" + time::get_time() + "|" + tran.str() + "]: ";
 			try
