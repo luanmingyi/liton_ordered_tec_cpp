@@ -20,9 +20,9 @@ Ordered_tec is a simple pack writing ordered data (structural data) to a binary 
 ## Usage
 
 ### Download and Configuration
-You only need to add the two folders `scr` and `liton_cpp_snippets` for using this package.
+You only need to download all folders in `scr`  for using this package.
 
-Before using it in your project, you need to copy the two folders into your project directory or somewhere else to make sure that the complier could find it. 
+Before using it in your project, you need to copy these folders into your project directory or somewhere else to make sure that the complier could find it. 
 
 ### Coding
 The Tecplot file consists of zones and data are storage in zone. Zones describe different set of data in space or in time. All the numbers of data in different zones in one file are same. Auxiliary data is extra data attached to file or zone which can be seen and used in Tecplot.
