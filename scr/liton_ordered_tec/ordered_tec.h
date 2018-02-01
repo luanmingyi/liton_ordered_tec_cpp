@@ -12,8 +12,8 @@
 #include"../tinyxml2/tinyxml2.h"
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  */
 namespace liton_ot
 {
@@ -67,14 +67,19 @@ namespace liton_ot
 		INT32 Real_Dim;///.
 		bool noskip, noexc;///.
 		std::map<std::string, std::string> Auxiliary;///.
+	  public:
+		inline INT32 & Max_C(const unsigned DIM, const unsigned &d) { return Max[DIM - 1 - d]; }
+		inline INT32 & Begin_C(const unsigned DIM, const unsigned &d) { return Begin[DIM - 1 - d]; }
+		inline INT32 & End_C(const unsigned DIM, const unsigned &d) { return End[DIM - 1 - d]; }
+		inline INT32 & Skip_C(const unsigned DIM, const unsigned &d) { return Skip[DIM - 1 - d]; }
 	};
 
 	class TEC_DATA_BASE
 	{
 	  public:
 		/**
-		 * @brief 
-		 * 
+		 * @brief
+		 *
 		 */
 		enum TEC_TYPE
 		{
@@ -285,42 +290,42 @@ namespace liton_ot
 		TEC_FILE_LOG last_log;///.
 	  public:
 		/**
-		 * @brief 
-		 * 
+		 * @brief
+		 *
 		 */
 		TEC_FILE(const std::string &name = "untitled_file", const std::string &path = ".", const std::string &title = "untitled");
 
 		/**
-		 * @brief 
-		 * 
-		 * @param name 
-		 * @param value 
-		 * @return true 
-		 * @return false 
+		 * @brief
+		 *
+		 * @param name
+		 * @param value
+		 * @return true
+		 * @return false
 		 */
 		bool add_auxiliary_data(const std::string &name, const std::string &value);
 		/**
-		 * @brief 
-		 * 
-		 * @param name 
-		 * @param value 
-		 * @return true 
-		 * @return false 
+		 * @brief
+		 *
+		 * @param name
+		 * @param value
+		 * @return true
+		 * @return false
 		 */
 		bool add_auxiliary_data(const std::string &name, const double &value);
 
 		/**
-		 * @brief 
-		 * 
-		 * @param file 
-		 * @param zone 
+		 * @brief
+		 *
+		 * @param file
+		 * @param zone
 		 */
 		void set_echo_mode(const std::string &file, const std::string &zone);
 
 		/**
-		 * @brief 
-		 * 
-		 * @param echo 
+		 * @brief
+		 *
+		 * @param echo
 		 */
 		void write_plt(bool echo = true);
 	  protected:
@@ -350,31 +355,31 @@ namespace liton_ot
 		bool needreal;
 	  public:
 		/**
-		 * @brief 
-		 * 
+		 * @brief
+		 *
 		 */
 		explicit TEC_ZONE(const std::string &name = "untitled_zone");
 		/**
-		 * @brief 
-		 * 
+		 * @brief
+		 *
 		 */
 		const INT32* get_real_size(const std::string &name = "realmax");
 		/**
-		 * @brief 
-		 * 
-		 * @param name 
-		 * @param value 
-		 * @return true 
-		 * @return false 
+		 * @brief
+		 *
+		 * @param name
+		 * @param value
+		 * @return true
+		 * @return false
 		 */
 		bool add_auxiliary_data(const std::string &name, const std::string &value);
 		/**
-		 * @brief 
-		 * 
-		 * @param name 
-		 * @param value 
-		 * @return true 
-		 * @return false 
+		 * @brief
+		 *
+		 * @param name
+		 * @param value
+		 * @return true
+		 * @return false
 		 */
 		bool add_auxiliary_data(const std::string &name, const double &value);
 	  protected:
@@ -402,15 +407,15 @@ namespace liton_ot
 		byte* buf;
 	  public:
 		/**
-		 * @brief 
-		 * 
+		 * @brief
+		 *
 		 */
 		TEC_DATA();
 		/**
-		 * @brief 
-		 * 
-		 * @tparam T 
-		 * @param iDataP 
+		 * @brief
+		 *
+		 * @tparam T
+		 * @param iDataP
 		 */
 		template<typename T> explicit TEC_DATA(T* iDataP);
 
@@ -421,23 +426,27 @@ namespace liton_ot
 
 template<typename T> liton_ot::TEC_DATA::TEC_DATA(T* iDataP)
 {
-	if (typeid(iDataP) == typeid(float*))
+	if (typeid(iDataP) == typeid(float*) || typeid(iDataP) == typeid(const float*))
 	{
 		type = TEC_DATA::TEC_FLOAT;
 	}
-	else if (typeid(iDataP) == typeid(double*))
+	else if (typeid(iDataP) == typeid(double*) || typeid(iDataP) == typeid(const double*))
 	{
 		type = TEC_DATA::TEC_DOUBLE;
 	}
-	else if ((typeid(iDataP) == typeid(longint*) || typeid(iDataP) == typeid(int*)) && sizeof(T) == TEC_LONGINT_S)
+	else if ((typeid(iDataP) == typeid(longint*) || typeid(iDataP) == typeid(shortint*)
+	          || typeid(iDataP) == typeid(const longint*) || typeid(iDataP) == typeid(const shortint*))
+	         && sizeof(T) == TEC_LONGINT_S)
 	{
 		type = TEC_DATA::TEC_LONGINT;
 	}
-	else if ((typeid(iDataP) == typeid(shortint*) || typeid(iDataP) == typeid(int*)) && sizeof(T) == TEC_SHORTINT_S)
+	else if ((typeid(iDataP) == typeid(shortint*) || typeid(iDataP) == typeid(longint*)
+	          || typeid(iDataP) == typeid(const shortint*) || typeid(iDataP) == typeid(const longint*))
+	         && sizeof(T) == TEC_SHORTINT_S)
 	{
 		type = TEC_DATA::TEC_SHORTINT;
 	}
-	else if (typeid(iDataP) == typeid(byte*))
+	else if (typeid(iDataP) == typeid(byte*) || typeid(iDataP) == typeid(const byte*))
 	{
 		type = TEC_DATA::TEC_BYTE;
 	}
