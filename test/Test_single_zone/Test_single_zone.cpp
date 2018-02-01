@@ -1,7 +1,7 @@
 # include <iostream>
 # include <cmath>
 using namespace std;
-# include "../../scr/ordered_tec.h"
+# include "../../scr/liton_ordered_tec/ordered_tec.h"
 using namespace liton_ot;
 
 # define DATATYPE double

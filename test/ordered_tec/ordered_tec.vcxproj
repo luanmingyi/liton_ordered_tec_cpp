@@ -19,12 +19,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\dep\tinyxml2\tinyxml2.h" />
-    <ClInclude Include="..\..\scr\ordered_tec.h" />
+    <ClInclude Include="..\..\scr\liton_cpp_snippets\lion_snippets.hpp" />
+    <ClInclude Include="..\..\scr\liton_ordered_tec\ordered_tec.h" />
+    <ClInclude Include="..\..\scr\tinyxml2\tinyxml2.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\dep\tinyxml2\tinyxml2.cpp" />
-    <ClCompile Include="..\..\scr\ordered_tec.cpp" />
+    <ClCompile Include="..\..\scr\liton_ordered_tec\ordered_tec.cpp" />
+    <ClCompile Include="..\..\scr\tinyxml2\tinyxml2.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C3D4AE20-FE0C-45AE-BAF8-104EA426627B}</ProjectGuid>
