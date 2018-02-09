@@ -1,3 +1,8 @@
+/**
+ * @file ordered_tec.h
+ * @author lmy
+ * 
+ */
 # ifndef ORDERED_TEC_H
 # define ORDERED_TEC_H
 
@@ -12,8 +17,7 @@
 #include"../tinyxml2/tinyxml2.h"
 
 /**
- * @brief
- *
+ * @brief namespace ordered_tec
  */
 namespace liton_ot
 {
@@ -21,9 +25,9 @@ namespace liton_ot
 	typedef float FLOAT32;
 	typedef double FLOAT64;
 
-	typedef signed int longint;
-	typedef signed short int shortint;
-	typedef signed char byte;
+	typedef signed int longint;///<longint in tecplot, same as int
+	typedef signed short int shortint;///<longint in tecplot, same as short int
+	typedef signed char byte;///<byte in tecplot, same as char
 
 	const size_t TEC_FLOAT_S = 4;
 	const size_t TEC_DOUBLE_S = 8;
@@ -44,33 +48,65 @@ namespace liton_ot
 	class TEC_FILE_BASE
 	{
 	  public:
-		std::string FilePath;///file path, default is "."
-		std::string FileName;///.
-		std::string Title;///.
-		std::vector<std::string> Variables;///.
-		INT32 FileType;///.
-		std::map<std::string, std::string> Auxiliary;///.
+		std::string FilePath;///<file path, default is current folder "."
+		std::string FileName;///<file name, default is "untitled_file"
+		std::string Title;///<file title, default is "untitled"
+		std::vector<std::string> Variables;///<vector of variables' names
+		/**
+		 * @brief filetype
+		 * @note
+		 * - 0 full file
+		 * - 1 grid file
+		 * - 2 solution file
+		 */
+		INT32 FileType;
+		std::map<std::string, std::string> Auxiliary;//<auxiliary in file
 	};
 
 	class TEC_ZONE_BASE
 	{
 	  public:
-		std::string ZoneName;///.
-		INT32 StrandId;///.
-		FLOAT64 SolutionTime;///.
-		INT32 Max[3];///.
-		INT32 Dim;///.
-		INT32 Skip[3];///.
-		INT32 Begin[3];///.
-		INT32 End[3];///.
-		INT32 Real_Max[3];///.
-		INT32 Real_Dim;///.
-		bool noskip, noexc;///.
-		std::map<std::string, std::string> Auxiliary;///.
+		std::string ZoneName;///<zone name, default is "untitled_zone"
+		INT32 StrandId;///<time strand id, -1 for static zone
+		FLOAT64 SolutionTime;///<flowtime, used in animation
+		INT32 Max[3];///<size of the original data @note in column-major order
+		INT32 Dim;///<dimension of the original data
+		INT32 Skip[3];///<stride to output in dimensions @note in column-major order
+		INT32 Begin[3];///<offset at the head in dimensions @note in column-major order
+		INT32 End[3];///<offset at the tail in dimensions @note in column-major order
+		INT32 Real_Max[3];///<size of the original data @note in column-major order
+		INT32 Real_Dim;///<dimension of the real data
+		bool noskip;///<if skip data in output
+		bool noexc;///<if exclude some data in output
+		std::map<std::string, std::string> Auxiliary;///<auxiliary in zone
 	  public:
+		/**
+		 * @brief get the reference of Max in row-major order
+		 * 
+		 * @param DIM dimensions of the original data
+		 * @param d the dimension to get in row-major order
+		 */
 		inline INT32 & Max_C(const unsigned DIM, const unsigned &d) { return Max[DIM - 1 - d]; }
+		/**
+		 * @brief get the reference of Begin in row-major order
+		 * 
+		 * @param DIM dimensions of the original data
+		 * @param d the dimension to get in row-major order
+		 */
 		inline INT32 & Begin_C(const unsigned DIM, const unsigned &d) { return Begin[DIM - 1 - d]; }
+		/**
+		 * @brief get the reference of End in row-major order
+		 * 
+		 * @param DIM dimensions of the original data
+		 * @param d the dimension to get in row-major order
+		 */
 		inline INT32 & End_C(const unsigned DIM, const unsigned &d) { return End[DIM - 1 - d]; }
+		/**
+		 * @brief get the reference of Skip in row-major order
+		 * 
+		 * @param DIM dimensions of the original data
+		 * @param d the dimension to get in row-major order
+		 */
 		inline INT32 & Skip_C(const unsigned DIM, const unsigned &d) { return Skip[DIM - 1 - d]; }
 	};
 
@@ -78,21 +114,20 @@ namespace liton_ot
 	{
 	  public:
 		/**
-		 * @brief
-		 *
+		 * @brief enum used to identity data type
 		 */
 		enum TEC_TYPE
 		{
 			TEC_NULL,
-			TEC_FLOAT = 1,
-			TEC_DOUBLE,
-			TEC_LONGINT,
-			TEC_SHORTINT,
-			TEC_BYTE
+			TEC_FLOAT = 1,///< float
+			TEC_DOUBLE,///< double
+			TEC_LONGINT,///< longint
+			TEC_SHORTINT,///< shortint
+			TEC_BYTE///< byte
 		};
 	  public:
-		TEC_TYPE type;///.
-		size_t size;///.
+		TEC_TYPE type;///<data type
+		size_t size;///<sizeof(data type)
 	};
 
 	/**
@@ -103,71 +138,62 @@ namespace liton_ot
 	{
 		friend class TEC_FILE;
 	  public:
-		std::vector<TEC_ZONE_LOG> Zones;///.
+		std::vector<TEC_ZONE_LOG> Zones;///<zone logs in file
 
-		std::string Time_Begin;///.
-		std::string Time_End;///.
-		double UsingTime;///.
-		double Size;///.
-		std::string Error;///.
-		std::vector<std::string> Echo_Text;///.
-		std::vector<std::string> Json_Text;///.
-		std::vector<std::string> Xml_Text;///.
+		std::string Time_Begin;///<begin time to output
+		std::string Time_End;///<end time to output
+		double UsingTime;///<time used to output
+		double Size;///<file size, in unit of MB
+		std::string Error;///<error message
+		std::vector<std::string> Echo_Text;///<echo text for file in each line, "#ZONE#" stand for zone
+		std::vector<std::string> Json_Text;///<json text for file in each line, "#ZONE#" stand for zone
+		std::vector<std::string> Xml_Text;///<xml text for file in each line, "#ZONE#" stand for zone
 	  public:
-		/**
-		 * @brief
-		 *
-		 */
 		TEC_FILE_LOG();
-		/**
-		 * @brief
-		 *
-		 * @param file
-		 */
 		explicit TEC_FILE_LOG(const TEC_FILE &file);
 
 		/**
-		 * @brief
+		 * @brief write echo to (FilePath)/(FileName).txt
 		 *
 		 */
 		void write_echo();
 		/**
-		 * @brief
+		 * @brief write echo to out file stream
 		 *
-		 * @param of
+		 * @param of out file stream
 		 */
 		void write_echo(std::ofstream &of);
 		/**
-		 * @brief
+		 * @brief write json to (FilePath)/(FileName).json
 		 *
-		 * @param depth
+		 * @param depth depth of the file, one for one tab
 		 */
 		void write_json(int depth = 0);
 		/**
-		 * @brief
+		 * @brief write json to out file stream
 		 *
-		 * @param of
-		 * @param depth
+		 * @param of of out file stream
+		 * @param depth depth of the file, one for one tab
 		 */
 		void write_json(std::ofstream &of, int depth = 0);
 		/**
-		 * @brief
+		 * @brief write xml to (FilePath)/(FileName).xml
 		 *
-		 * @param depth
+		 * @param depth depth of the file, one for one tab
 		 */
 		void write_xml(int depth = 0);
 		/**
-		 * @brief
+		 * @brief write xml to out file stream
 		 *
-		 * @param of
-		 * @param depth
+		 * @param of of out file stream
+		 * @param depth depth of the file, one for one tab
 		 */
 		void write_xml(std::ofstream &of, int depth = 0);
 
 		/**
-		 * @brief
+		 * @brief read file logs form xml file
 		 *
-		 * @param file_root
+		 * @param file_root node "File"
 		 */
 		void read_xml(const tinyxml2::XMLElement* file_root);
 	  protected:
@@ -183,67 +209,58 @@ namespace liton_ot
 	{
 		friend class TEC_FILE_LOG;
 	  public:
-		std::vector<TEC_DATA_LOG> Data;///.
+		std::vector<TEC_DATA_LOG> Data;///<data logs in zone
 
-		double Size;///.
-		std::vector<std::string> Echo_Text;///.
-		std::vector<std::string> Json_Text;///.
-		std::vector<std::string> Xml_Text;///.
+		double Size;///<zone size, in unit of MB
+		std::vector<std::string> Echo_Text;///<echo text for zone including data in each line
+		std::vector<std::string> Json_Text;///<json text for zone including data in each line
+		std::vector<std::string> Xml_Text;///<xml text for zone including data in each line
 	  public:
-		/**
-		 * @brief
-		 *
-		 */
 		TEC_ZONE_LOG();
-		/**
-		 * @brief
-		 *
-		 * @param zone
-		 */
 		explicit TEC_ZONE_LOG(const TEC_ZONE &zone);
 
 		/**
-		 * @brief
+		 * @brief write echo to (FilePath)/Zone_(ZoneName).txt
 		 *
 		 */
 		void write_echo();
 		/**
-		 * @brief
+		 * @brief write echo to out file stream
 		 *
-		 * @param of
+		 * @param of out file stream
 		 */
 		void write_echo(std::ofstream &of);
 		/**
-		 * @brief
+		 * @brief write json to (FilePath)/Zone_(ZoneName).json
 		 *
-		 * @param depth
+		 * @param depth depth of the file, one for one tab
 		 */
 		void write_json(int depth = 0);
 		/**
-		 * @brief
+		 * @brief write json to out file stream
 		 *
-		 * @param of
-		 * @param depth
+		 * @param of of of out file stream
+		 * @param depth depth of the file, one for one tab
 		 */
 		void write_json(std::ofstream &of, int depth = 0);
 		/**
-		 * @brief
+		 * @brief write xml to (FilePath)/Zone_(ZoneName).xml
 		 *
-		 * @param depth
+		 * @param depth depth of the file, one for one tab
 		 */
 		void write_xml(int depth = 0);
 		/**
-		 * @brief
+		 * @brief write xml to out file stream
 		 *
-		 * @param of
-		 * @param depth
+		 * @param of of out file stream
+		 * @param depth depth of the file, one for one tab
 		 */
 		void write_xml(std::ofstream &of, int depth = 0);
 
 		/**
-		 * @brief
+		 * @brief read zone logs form xml file
 		 *
-		 * @param zone_root
+		 * @param zone_root node "Zone"
 		 */
 		void read_xml(const tinyxml2::XMLElement* zone_root);
 	  protected:
@@ -258,20 +275,11 @@ namespace liton_ot
 	class TEC_DATA_LOG : public TEC_DATA_BASE
 	{
 	  public:
-		long int file_pt;///.
-		double min;///.
-		double max;///.
+		long int file_pt;///<file point for reading file
+		double min;///<min of the output data
+		double max;///<max of the output data
 	  public:
-		/**
-		 * @brief
-		 *
-		 */
 		TEC_DATA_LOG();
-		/**
-		 * @brief
-		 *
-		 * @param data
-		 */
 		explicit TEC_DATA_LOG(const TEC_DATA &data);
 	};
 
@@ -282,50 +290,70 @@ namespace liton_ot
 	class TEC_FILE : public TEC_FILE_BASE
 	{
 	  public:
-		std::vector<TEC_ZONE> Zones;///.
+		std::vector<TEC_ZONE> Zones;///< zones in file
 
-		//usingtime, time, size, section, variable, file_end, file_head
-		std::bitset<7> Echo_Mode;///.
+		/**
+		 * @brief flags to control echo
+		 * 
+		 * - usingtime
+		 * - time
+		 * - size
+		 * - section
+		 * - variable
+		 * - file_end
+		 * - file_head
+		 */
+		std::bitset<7> Echo_Mode;
 
-		TEC_FILE_LOG last_log;///.
+		TEC_FILE_LOG last_log;///<file log of the last time output
 	  public:
 		/**
-		 * @brief
-		 *
+		 * @brief construction function
+		 * 
+		 * @param name file name, default is "untitled_file"
+		 * @param path file path, default is "."
+		 * @param title file title, default is "untitled"
 		 */
 		TEC_FILE(const std::string &name = "untitled_file", const std::string &path = ".", const std::string &title = "untitled");
 
 		/**
-		 * @brief
+		 * @brief add string type of auxiliary data
 		 *
-		 * @param name
-		 * @param value
-		 * @return true
-		 * @return false
+		 * @param name name
+		 * @param value auxiliary data
+		 * @return return if the operation succeeds
 		 */
 		bool add_auxiliary_data(const std::string &name, const std::string &value);
 		/**
-		 * @brief
+		 * @brief add double type of auxiliary data
 		 *
-		 * @param name
-		 * @param value
-		 * @return true
-		 * @return false
+		 * @param name name
+		 * @param value auxiliary data
+		 * @return return if the operation succeeds
 		 */
 		bool add_auxiliary_data(const std::string &name, const double &value);
 
 		/**
-		 * @brief
+		 * @brief set echo mode
 		 *
-		 * @param file
-		 * @param zone
+		 * @param file file mode
+		 * - brief(default) time, variable, file_end, file_head
+		 * - full all
+		 * - simple time, file_head
+		 * - none none
+		 * 
+		 * @param zone zone mode
+		 * - brief(default) max_real, zone_head
+		 * - full all
+		 * - simple zone_head
+		 * - none none
 		 */
 		void set_echo_mode(const std::string &file, const std::string &zone);
 
 		/**
-		 * @brief
+		 * @brief write plt data
 		 *
-		 * @param echo
+		 * @param echo if echo on screen
 		 */
 		void write_plt(bool echo = true);
 	  protected:
@@ -344,10 +372,22 @@ namespace liton_ot
 	{
 		friend class TEC_FILE;
 	  public:
-		std::vector<TEC_DATA> Data;///.
+		std::vector<TEC_DATA> Data;///data in zone
 
-		//size, stdid & soltime, begin & end, skip, max_org, max_real, variable, zone_end, zone_head
-		std::bitset<9> Echo_Mode;///.
+		/**
+		 * @brief flags to control echo
+		 * 
+		 * - size
+		 * - stdid & soltime
+		 * - begin & end
+		 * - skip
+		 * - max_org
+		 * - max_real
+		 * - variable
+		 * - zone_end
+		 * - zone_head
+		 */
+		std::bitset<9> Echo_Mode;
 	  protected:
 		INT32 Real_Max[3];
 		INT32 Real_Dim;
@@ -355,31 +395,26 @@ namespace liton_ot
 		bool needreal;
 	  public:
 		/**
-		 * @brief
+		 * @brief construction function
 		 *
+		 * @param name zone name, default is untitled_zone
 		 */
 		explicit TEC_ZONE(const std::string &name = "untitled_zone");
-		/**
-		 * @brief
-		 *
-		 */
 		const INT32* get_real_size(const std::string &name = "realmax");
 		/**
-		 * @brief
+		 * @brief add string type of auxiliary data
 		 *
-		 * @param name
-		 * @param value
-		 * @return true
-		 * @return false
+		 * @param name name
+		 * @param value auxiliary data
+		 * @return true if the operation succeeds
 		 */
 		bool add_auxiliary_data(const std::string &name, const std::string &value);
 		/**
-		 * @brief
+		 * @brief add double type of auxiliary data
 		 *
-		 * @param name
-		 * @param value
-		 * @return true
-		 * @return false
+		 * @param name name
+		 * @param value auxiliary data
+		 * @return true if the operation succeeds
 		 */
 		bool add_auxiliary_data(const std::string &name, const double &value);
 	  protected:
@@ -402,20 +437,16 @@ namespace liton_ot
 	{
 		friend class TEC_ZONE;
 	  public:
-		const void* DataP;///.
+		const void* DataP;///<pointer points to data
 	  protected:
 		byte* buf;
 	  public:
-		/**
-		 * @brief
-		 *
-		 */
 		TEC_DATA();
 		/**
-		 * @brief
+		 * @brief construction function
 		 *
-		 * @tparam T
-		 * @param iDataP
+		 * @tparam T data type
+		 * @param iDataP pointer points to data
 		 */
 		template<typename T> explicit TEC_DATA(T* iDataP);
 
