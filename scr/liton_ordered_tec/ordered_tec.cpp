@@ -9,7 +9,8 @@
 #include<ctime>
 #include<cerrno>
 
-#include"tinyxml2.h"
+#include"../tinyxml2/tinyxml2.h"
+#include"../liton_cpp_snippets/lion_snippets.hpp"
 #include"ordered_tec.h"
 
 #define TEC_INT32_S 4
@@ -18,65 +19,31 @@
 
 using namespace liton_ot;
 
-inline void W_INT32(const INT32 &a, FILE *f)
+inline void W_INT32(const INT32 &a, FILE* f)
 {
 	INT32 t = a;
 	std::fwrite(&t, TEC_INT32_S, 1, f);
 }
 
-inline void W_FLOAT32(const FLOAT32 &a, FILE *f)
+inline void W_FLOAT32(const FLOAT32 &a, FILE* f)
 {
 	FLOAT32 t = a;
 	std::fwrite(&t, TEC_FLOAT32_S, 1, f);
 }
 
-inline void W_FLOAT64(const FLOAT64 &a, FILE *f)
+inline void W_FLOAT64(const FLOAT64 &a, FILE* f)
 {
 	FLOAT64 t = a;
 	std::fwrite(&t, TEC_FLOAT64_S, 1, f);
 }
 
-inline void W_STRING(const std::string &a, FILE *f)
+inline void W_STRING(const std::string &a, FILE* f)
 {
 	for (std::string::const_iterator i = a.begin(); i != a.end(); ++i)
 	{
 		W_INT32(*i, f);
 	}
 	W_INT32(0, f);
-}
-
-inline std::string get_time(const std::string &format = "%Y%m%dT%H%M%S")
-{
-	time_t time_c = std::time(NULL);
-	struct tm tm_c;
-# ifdef __linux__
-	localtime_r(&time_c, &tm_c);
-# else
-	localtime_s(&tm_c, &time_c);
-# endif
-	char buf[100];
-	std::strftime(buf, 100, format.c_str(), &tm_c);
-	return buf;
-}
-
-inline FILE * openfile(const std::string &fullname, const char* mode)
-{
-# ifdef __linux__
-	FILE *of;
-	of = std::fopen(fullname.c_str(), mode);
-	if (of == NULL)
-	{
-		throw std::runtime_error(std::string("can not open file ") + fullname);
-	}
-# else
-	FILE *of;
-	errno_t err = fopen_s(&of, fullname.c_str(), mode);
-	if (err != 0)
-	{
-		throw std::runtime_error(std::string("can not open file ") + fullname);
-	}
-# endif
-	return of;
 }
 
 TEC_FILE_LOG::TEC_FILE_LOG()
@@ -86,7 +53,7 @@ TEC_FILE_LOG::TEC_FILE_LOG()
 	UsingTime = 0;
 }
 
-TEC_FILE_LOG::TEC_FILE_LOG(const TEC_FILE & file) : TEC_FILE_BASE(file) {}
+TEC_FILE_LOG::TEC_FILE_LOG(const TEC_FILE &file) : TEC_FILE_BASE(file) {}
 
 void TEC_FILE_LOG::write_echo()
 {
@@ -184,7 +151,7 @@ void TEC_FILE_LOG::write_xml(std::ofstream &of, int depth)
 	}
 }
 
-void TEC_FILE_LOG::read_xml(const tinyxml2::XMLElement * file_root)
+void TEC_FILE_LOG::read_xml(const tinyxml2::XMLElement* file_root)
 {
 	FileName = file_root->Attribute("FileName");
 	FilePath = file_root->FirstChildElement("FilePath")->GetText();
@@ -192,7 +159,7 @@ void TEC_FILE_LOG::read_xml(const tinyxml2::XMLElement * file_root)
 	file_root->FirstChildElement("UsingTime")->QueryDoubleText(&UsingTime);
 	Title = file_root->FirstChildElement("Title")->GetText();
 	file_root->FirstChildElement("FileType")->QueryIntText(&FileType);
-	const tinyxml2::XMLElement * temp;
+	const tinyxml2::XMLElement* temp;
 	temp = file_root->FirstChildElement("Variables")->FirstChildElement();
 	while (temp)
 	{
@@ -321,7 +288,7 @@ void TEC_FILE_LOG::gen_xml()
 
 TEC_ZONE_LOG::TEC_ZONE_LOG() {}
 
-TEC_ZONE_LOG::TEC_ZONE_LOG(const TEC_ZONE & zone) : TEC_ZONE_BASE(zone) {}
+TEC_ZONE_LOG::TEC_ZONE_LOG(const TEC_ZONE &zone) : TEC_ZONE_BASE(zone) {}
 
 void TEC_ZONE_LOG::write_echo()
 {
@@ -392,7 +359,7 @@ void TEC_ZONE_LOG::write_xml(std::ofstream &of, int depth)
 	}
 }
 
-void TEC_ZONE_LOG::read_xml(const tinyxml2::XMLElement * zone_root)
+void TEC_ZONE_LOG::read_xml(const tinyxml2::XMLElement* zone_root)
 {
 	ZoneName = zone_root->FirstChildElement("ZoneName")->GetText();
 	zone_root->FirstChildElement("StrandId")->QueryIntText(&StrandId);
@@ -402,7 +369,7 @@ void TEC_ZONE_LOG::read_xml(const tinyxml2::XMLElement * zone_root)
 	}
 	zone_root->FirstChildElement("Org_Dim")->QueryIntText(&Dim);
 	zone_root->FirstChildElement("Real_Dim")->QueryIntText(&Real_Dim);
-	const tinyxml2::XMLElement * temp;
+	const tinyxml2::XMLElement* temp;
 	temp = zone_root->FirstChildElement("Org_Max")->FirstChildElement();
 	for (size_t i = 0; temp; ++i)
 	{
@@ -453,7 +420,7 @@ void TEC_ZONE_LOG::read_xml(const tinyxml2::XMLElement * zone_root)
 		temp->QueryUnsignedAttribute("size_i", &si_temp);
 		(Data.end() - 1)->size = si_temp;
 		std::string pt_temp = temp->Attribute("file_pt");
-		(Data.end() - 1)->file_pt = std::strtol(pt_temp.c_str(),'\0',10);
+		(Data.end() - 1)->file_pt = std::strtol(pt_temp.c_str(), '\0', 10);
 		temp->QueryDoubleAttribute("min", &((Data.end() - 1)->min));
 		temp->QueryDoubleAttribute("max", &((Data.end() - 1)->max));
 		temp = temp->NextSiblingElement();
@@ -501,7 +468,7 @@ void TEC_ZONE_LOG::gen_json()
 	for (std::vector<TEC_DATA_LOG>::const_iterator i = Data.begin(); i != Data.end(); ++i)
 	{
 		std::sprintf(buf, "\t\t{ \"type\":%i, \"size_i\":%i, \"file_pt\":%li, \"min\":%le, \"max\":%le }",
-			i->type, int(i->size), Data[i - Data.begin()].file_pt, Data[i - Data.begin()].min, Data[i - Data.begin()].max);
+		             i->type, int(i->size), Data[i - Data.begin()].file_pt, Data[i - Data.begin()].min, Data[i - Data.begin()].max);
 		Json_Text.push_back(buf);
 		if (Data.end() - i != 1)
 		{
@@ -549,7 +516,7 @@ void TEC_ZONE_LOG::gen_xml()
 	for (std::vector<TEC_DATA_LOG>::iterator i = Data.begin(); i != Data.end(); ++i)
 	{
 		std::sprintf(buf, "\t\t<Data_%i type=\"%i\" size_i=\"%i\" file_pt=\"%li\" min=\"%le\" max=\"%le\"/>",
-			int(i - Data.begin()), i->type, int(i->size), Data[i - Data.begin()].file_pt, Data[i - Data.begin()].min, Data[i - Data.begin()].max);
+		             int(i - Data.begin()), i->type, int(i->size), Data[i - Data.begin()].file_pt, Data[i - Data.begin()].min, Data[i - Data.begin()].max);
 		Xml_Text.push_back(buf);
 	}
 	Xml_Text.push_back("\t</Datas>");
@@ -559,7 +526,7 @@ void TEC_ZONE_LOG::gen_xml()
 
 TEC_DATA_LOG::TEC_DATA_LOG() {}
 
-TEC_DATA_LOG::TEC_DATA_LOG(const TEC_DATA & data) : TEC_DATA_BASE(data) {}
+TEC_DATA_LOG::TEC_DATA_LOG(const TEC_DATA &data) : TEC_DATA_BASE(data) {}
 
 TEC_FILE::TEC_FILE(const std::string &name, const std::string &path, const std::string &title)
 {
@@ -571,15 +538,15 @@ TEC_FILE::TEC_FILE(const std::string &name, const std::string &path, const std::
 	echo_mode();
 }
 
-bool TEC_FILE::add_auxiliary_data(const std::string &name,const std::string &value)
+bool TEC_FILE::add_auxiliary_data(const std::string &name, const std::string &value)
 {
-	std::pair<std::map<std::string,std::string>::iterator,bool> ans;
-	std::pair<std::string,std::string> temp(name,value);
-	ans=Auxiliary.insert(temp);
+	std::pair<std::map<std::string, std::string>::iterator, bool> ans;
+	std::pair<std::string, std::string> temp(name, value);
+	ans = Auxiliary.insert(temp);
 	return ans.second;
 }
 
-bool TEC_FILE::add_auxiliary_data(const std::string &name,const double &value)
+bool TEC_FILE::add_auxiliary_data(const std::string &name, const double &value)
 {
 	char buf[200];
 	std::sprintf(buf, "%lf", value);
@@ -606,16 +573,16 @@ void TEC_FILE::write_plt(bool echo)
 	last_log = TEC_FILE_LOG(*this);
 
 	clock_t clock_begin = clock();
-	last_log.Time_Begin = get_time();
+	last_log.Time_Begin = liton_sp::time::get_time();
 
 	wrtie_plt_pre();
 
-	FILE *of;
+	FILE* of;
 	try
 	{
-		of = openfile(FilePath + "/" + FileName + ".plt", "wb");
+		of = liton_sp::file::open_file_c(FilePath + "/" + FileName + ".plt", "wb");
 	}
-	catch (const std::exception& err)
+	catch (const std::exception &err)
 	{
 		last_log.Error = err.what();
 		throw std::runtime_error(err.what());
@@ -624,10 +591,10 @@ void TEC_FILE::write_plt(bool echo)
 	{
 		if (Echo_Mode.test(5))
 		{
-			if (echo) std::printf("[%s] ", last_log.Time_Begin.c_str());
+			if (echo) { std::printf("[%s] ", last_log.Time_Begin.c_str()); }
 			last_log.Echo_Text.push_back("[" + last_log.Time_Begin + "] ");
 		}
-		if (echo) std::printf("#### creat file %s/%s.plt ####\n", FilePath.c_str(), FileName.c_str());
+		if (echo) { std::printf("#### creat file %s/%s.plt ####\n", FilePath.c_str(), FileName.c_str()); }
 		if (Echo_Mode.test(5))
 		{
 			*(last_log.Echo_Text.end() - 1) += "#### creat file " + FilePath + "/" + FileName + ".plt ####";
@@ -645,7 +612,7 @@ void TEC_FILE::write_plt(bool echo)
 	W_FLOAT32(357.0f, of);
 	if (Echo_Mode.test(3))
 	{
-		if (echo) std::printf("-------------------------------------\n");
+		if (echo) { std::printf("-------------------------------------\n"); }
 		last_log.Echo_Text.push_back("-------------------------------------");
 	}
 
@@ -659,7 +626,7 @@ void TEC_FILE::write_plt(bool echo)
 	{
 		char buf[100];
 		std::sprintf(buf, "     file size: %.1lf MB", s_f);
-		if (echo) std::printf("%s\n", buf);
+		if (echo) { std::printf("%s\n", buf); }
 		last_log.Echo_Text.push_back(buf);
 	}
 
@@ -670,19 +637,19 @@ void TEC_FILE::write_plt(bool echo)
 	{
 		char buf[100];
 		std::sprintf(buf, "     using time : %.5lf s", last_log.UsingTime);
-		if (echo) std::printf("%s\n", buf);
+		if (echo) { std::printf("%s\n", buf); }
 		last_log.Echo_Text.push_back(buf);
 	}
-	
-	last_log.Time_End = get_time();
+
+	last_log.Time_End = liton_sp::time::get_time();
 	if (Echo_Mode.test(1))
 	{
 		if (Echo_Mode.test(5))
 		{
-			if (echo) std::printf("[%s] ", last_log.Time_End.c_str());
+			if (echo) { std::printf("[%s] ", last_log.Time_End.c_str()); }
 			last_log.Echo_Text.push_back("[" + last_log.Time_End + "] ");
 		}
-		if (echo) std::printf("#### creat file %s/%s.plt ####\n", FilePath.c_str(), FileName.c_str());
+		if (echo) { std::printf("#### creat file %s/%s.plt ####\n", FilePath.c_str(), FileName.c_str()); }
 		if (Echo_Mode.test(5))
 		{
 			*(last_log.Echo_Text.end() - 1) += "#### creat file " + FilePath + "/" + FileName + ".plt ####";
@@ -700,19 +667,19 @@ void TEC_FILE::write_plt(bool echo)
 void TEC_FILE::echo_mode(const std::string &iecho)
 {
 	std::string e_m = iecho;
-	if (e_m.compare("brief")==0)
+	if (e_m.compare("brief") == 0)
 	{
 		e_m = "0100111";
 	}
-	else if (iecho.compare("full")==0)
+	else if (iecho.compare("full") == 0)
 	{
 		e_m = "1111111";
 	}
-	else if (iecho.compare("simple")==0)
+	else if (iecho.compare("simple") == 0)
 	{
 		e_m = "0100001";
 	}
-	else if (iecho.compare("none")==0)
+	else if (iecho.compare("none") == 0)
 	{
 		e_m = "0000000";
 	}
@@ -720,7 +687,7 @@ void TEC_FILE::echo_mode(const std::string &iecho)
 	{
 		Echo_Mode = std::bitset<7>(e_m);
 	}
-	catch (const std::exception&)
+	catch (const std::exception &)
 	{
 		throw std::runtime_error("File(" + FileName + "): echo code wrong");
 	}
@@ -743,9 +710,9 @@ void TEC_FILE::wrtie_plt_pre()
 		try
 		{
 			last_log.Zones.push_back(TEC_ZONE_LOG(*i));
-			i->wrtie_plt_pre(*this, *(last_log.Zones.end()-1));
+			i->wrtie_plt_pre(*this, *(last_log.Zones.end() - 1));
 		}
-		catch (const std::exception&err)
+		catch (const std::exception &err)
 		{
 			last_log.Error = "File(" + FileName + ")." + err.what();
 			throw std::runtime_error("File(" + FileName + ")." + err.what());
@@ -753,7 +720,7 @@ void TEC_FILE::wrtie_plt_pre()
 	}
 }
 
-void TEC_FILE::write_plt_head(FILE *of, bool echo)
+void TEC_FILE::write_plt_head(FILE* of, bool echo)
 {
 	//I    HEADER SECTION
 	//i    Magic number, Version number
@@ -766,7 +733,7 @@ void TEC_FILE::write_plt_head(FILE *of, bool echo)
 	W_INT32(Variables.size(), of);//Number of variables (NumVar) in the datafile
 	if (Echo_Mode.test(2))
 	{
-		if (echo) std::printf("     VAR:");
+		if (echo) { std::printf("     VAR:"); }
 		last_log.Echo_Text.push_back("     VAR:");
 	}
 	for (std::vector<std::string>::const_iterator i = Variables.begin(); i != Variables.end(); ++i)
@@ -775,13 +742,13 @@ void TEC_FILE::write_plt_head(FILE *of, bool echo)
 
 		if (Echo_Mode.test(2))
 		{
-			if (echo) std::printf(" <%s>", i->c_str());
+			if (echo) { std::printf(" <%s>", i->c_str()); }
 			*(last_log.Echo_Text.end() - 1) += " <" + *i + ">";
 		}
 	}
 	if (Echo_Mode.test(2))
 	{
-		if (echo) std::printf("\n");
+		if (echo) { std::printf("\n"); }
 	}
 	//iv   Zones
 	for (std::vector<TEC_ZONE>::const_iterator i = Zones.begin(); i != Zones.end(); ++i)
@@ -798,7 +765,7 @@ void TEC_FILE::write_plt_head(FILE *of, bool echo)
 	}
 }
 
-void TEC_FILE::write_plt_data(FILE *of, bool echo)
+void TEC_FILE::write_plt_data(FILE* of, bool echo)
 {
 	//II   DATA SECTION
 	//i    For both ordered and fe zones
@@ -808,18 +775,18 @@ void TEC_FILE::write_plt_data(FILE *of, bool echo)
 		{
 			char buf[100];
 			std::sprintf(buf, "--   write zone %i: %s   --", int(i - Zones.begin() + 1), i->ZoneName.c_str());
-			if (echo) std::printf("%s\n", buf);
+			if (echo) { std::printf("%s\n", buf); }
 			last_log.Echo_Text.push_back(buf);
 		}
 
-		i->write_plt_data(of, *this, last_log.Zones[i- Zones.begin()], echo);
+		i->write_plt_data(of, *this, last_log.Zones[i - Zones.begin()], echo);
 		last_log.Echo_Text.push_back("#ZONE#");
 
 		if (i->Echo_Mode.test(1))
 		{
 			char buf[100];
 			std::sprintf(buf, "--   write zone %i: %s   --", int(i - Zones.begin() + 1), i->ZoneName.c_str());
-			if (echo) std::printf("%s\n", buf);
+			if (echo) { std::printf("%s\n", buf); }
 			last_log.Echo_Text.push_back(buf);
 		}
 	}
@@ -848,28 +815,29 @@ TEC_ZONE::TEC_ZONE(const std::string &name)
 	echo_mode();
 }
 
-const INT32 * TEC_ZONE::get_real_size(const std::string &name)
+INT32 TEC_ZONE::get_real_max(unsigned d)
 {
 	gather_real_size();
-	if (name.compare("realmax") == 0)
-	{
-		return Real_Max;
-	}
-	else if (name.compare("realdim") == 0)
-	{
-		return &Real_Dim;
-	}
-	else
-	{
-		throw std::out_of_range("get_real_size : size code wrong");
-	}
+	return Real_Max[d];
+}
+
+INT32 TEC_ZONE::get_real_max_C(const unsigned DIM, const unsigned & d)
+{
+	gather_real_size();
+	return Real_Max[DIM - 1 - d];
+}
+
+INT32 TEC_ZONE::get_real_dim()
+{
+	gather_real_size();
+	return Real_Dim;
 }
 
 bool TEC_ZONE::add_auxiliary_data(const std::string &name, const std::string &value)
 {
-	std::pair<std::map<std::string,std::string>::iterator,bool> ans;
-	std::pair<std::string,std::string> temp(name,value);
-	ans=Auxiliary.insert(temp);
+	std::pair<std::map<std::string, std::string>::iterator, bool> ans;
+	std::pair<std::string, std::string> temp(name, value);
+	ans = Auxiliary.insert(temp);
 	return ans.second;
 }
 
@@ -883,19 +851,19 @@ bool TEC_ZONE::add_auxiliary_data(const std::string &name, const double &value)
 void TEC_ZONE::echo_mode(const std::string &iecho)
 {
 	std::string e_m = iecho;
-	if (e_m.compare("brief")==0)
+	if (e_m.compare("brief") == 0)
 	{
 		e_m = "000001001";
 	}
-	else if (e_m.compare("full")==0)
+	else if (e_m.compare("full") == 0)
 	{
 		e_m = "111111111";
 	}
-	else if (e_m.compare("simple")==0)
+	else if (e_m.compare("simple") == 0)
 	{
 		e_m = "000000001";
 	}
-	else if (e_m.compare("none")==0)
+	else if (e_m.compare("none") == 0)
 	{
 		e_m = "000000000";
 	}
@@ -903,7 +871,7 @@ void TEC_ZONE::echo_mode(const std::string &iecho)
 	{
 		Echo_Mode = std::bitset<9>(e_m);
 	}
-	catch (const std::exception&)
+	catch (const std::exception &)
 	{
 		throw std::runtime_error("Zone(" + ZoneName + "): echo code wrong");
 	}
@@ -913,7 +881,7 @@ void TEC_ZONE::gather_real_size()
 {
 	for (int i = 0; i != 3; ++i)
 	{
-		char index[3] = { 'I','J','K' };
+		char index[3] = { 'I', 'J', 'K' };
 		if (Max[i] == 0)
 		{
 			throw std::runtime_error("Zone(" + ZoneName + "): " + index[i] + "Max connot be zero");
@@ -951,7 +919,7 @@ void TEC_ZONE::gather_real_size()
 		{
 			--Real_Dim;
 		}
-		noskip = noskip && Skip[i]==1;
+		noskip = noskip && Skip[i] == 1;
 		noexc = noexc && Begin[i] == 0 && End[i] == 0;
 	}
 }
@@ -960,32 +928,32 @@ void TEC_ZONE::make_buf()
 {
 	if(noskip && noexc)
 	{
-		for(std::vector<TEC_DATA>::iterator i=Data.begin();i!=Data.end();++i)
+		for(std::vector<TEC_DATA>::iterator i = Data.begin(); i != Data.end(); ++i)
 		{
-			i->buf=(byte *)i->DataP;
+			i->buf = (byte*)i->DataP;
 		}
 		needreal = false;
 	}
 	else if(noskip)
 	{
-		for(std::vector<TEC_DATA>::iterator i=Data.begin();i!=Data.end();++i)
+		for(std::vector<TEC_DATA>::iterator i = Data.begin(); i != Data.end(); ++i)
 		{
-			size_t size=i->size;
-			byte * datap=(byte *)i->DataP;
+			size_t size = i->size;
+			byte* datap = (byte*)i->DataP;
 			try
 			{
 				i->buf = new byte[Real_Max[0]*Real_Max[1]*Real_Max[2]*size];
 			}
-			catch (const std::exception&err)
+			catch (const std::exception &err)
 			{
 				throw std::runtime_error(std::string("maybe out of memory: ") + err.what());
 			}
-			for(INT32 sk=Begin[2];sk<Max[2]-End[2];sk+=Skip[2])
+			for(INT32 sk = Begin[2]; sk < Max[2] - End[2]; sk += Skip[2])
 			{
-				for(INT32 sj=Begin[1];sj<Max[1]-End[1];sj+=Skip[1])
+				for(INT32 sj = Begin[1]; sj < Max[1] - End[1]; sj += Skip[1])
 				{
-					std::memcpy(i->buf+(Real_Max[0]*(sj-Begin[1])/Skip[1]+Real_Max[0]*Real_Max[1]*(sk-Begin[2])/Skip[2])*size,
-						        datap+(Begin[0]+Max[0]*sj+Max[0]*Max[1]*sk)*size, Real_Max[0]*size);
+					std::memcpy(i->buf + (Real_Max[0] * (sj - Begin[1]) / Skip[1] + Real_Max[0]*Real_Max[1] * (sk - Begin[2]) / Skip[2])*size,
+					            datap + (Begin[0] + Max[0]*sj + Max[0]*Max[1]*sk)*size, Real_Max[0]*size);
 				}
 			}
 		}
@@ -993,26 +961,26 @@ void TEC_ZONE::make_buf()
 	}
 	else
 	{
-		for(std::vector<TEC_DATA>::iterator i=Data.begin();i!=Data.end();++i)
+		for(std::vector<TEC_DATA>::iterator i = Data.begin(); i != Data.end(); ++i)
 		{
-			size_t size=i->size;
-			byte * datap=(byte *)i->DataP;
+			size_t size = i->size;
+			byte* datap = (byte*)i->DataP;
 			try
 			{
 				i->buf = new byte[Real_Max[0]*Real_Max[1]*Real_Max[2]*size];
 			}
-			catch (const std::exception&err)
+			catch (const std::exception &err)
 			{
 				throw std::runtime_error(std::string("maybe out of memory: ") + err.what());
 			}
-			for(INT32 sk=Begin[2];sk<Max[2]-End[2];sk+=Skip[2])
+			for(INT32 sk = Begin[2]; sk < Max[2] - End[2]; sk += Skip[2])
 			{
-				for(INT32 sj=Begin[1];sj<Max[1]-End[1];sj+=Skip[1])
+				for(INT32 sj = Begin[1]; sj < Max[1] - End[1]; sj += Skip[1])
 				{
-					for(INT32 si=Begin[0];si<Max[0]-End[0];si+=Skip[0])
+					for(INT32 si = Begin[0]; si < Max[0] - End[0]; si += Skip[0])
 					{
-						std::memcpy(i->buf+((si-Begin[0])/Skip[0]+Real_Max[0]*(sj-Begin[1])/Skip[1]+Real_Max[0]*Real_Max[1]*(sk-Begin[2])/Skip[2])*size,
-							        datap+(si+Max[0]*sj+Max[0]*Max[1]*sk)*size, size);
+						std::memcpy(i->buf + ((si - Begin[0]) / Skip[0] + Real_Max[0] * (sj - Begin[1]) / Skip[1] + Real_Max[0]*Real_Max[1] * (sk - Begin[2]) / Skip[2])*size,
+						            datap + (si + Max[0]*sj + Max[0]*Max[1]*sk)*size, size);
 					}
 				}
 			}
@@ -1050,7 +1018,7 @@ void TEC_ZONE::wrtie_plt_pre(const TEC_FILE &thisfile, TEC_ZONE_LOG &zone_log)
 	zone_log.Real_Max[2] = Real_Max[2];
 	zone_log.noskip = noskip;
 	zone_log.noexc = noexc;
-	
+
 	if (Data.size() == 0)
 	{
 		throw std::runtime_error("Zone(" + ZoneName + "): Data is empty");
@@ -1069,7 +1037,7 @@ void TEC_ZONE::wrtie_plt_pre(const TEC_FILE &thisfile, TEC_ZONE_LOG &zone_log)
 	}
 }
 
-void TEC_ZONE::write_plt_head(FILE *of) const
+void TEC_ZONE::write_plt_head(FILE* of) const
 {
 	W_FLOAT32(299.0f, of);//Zone marker. Value = 299.0
 	W_STRING(ZoneName, of);//Zone name
@@ -1094,7 +1062,7 @@ void TEC_ZONE::write_plt_head(FILE *of) const
 	W_INT32(0, of);//No more Auxiliary name/value pairs
 }
 
-void TEC_ZONE::write_plt_data(FILE *of, const TEC_FILE &thisfile, TEC_ZONE_LOG &zone_log, bool echo)
+void TEC_ZONE::write_plt_data(FILE* of, const TEC_FILE &thisfile, TEC_ZONE_LOG &zone_log, bool echo)
 {
 	long int pos_b, pos_e;
 	pos_b = std::ftell(of);
@@ -1111,7 +1079,7 @@ void TEC_ZONE::write_plt_data(FILE *of, const TEC_FILE &thisfile, TEC_ZONE_LOG &
 
 	for (std::vector<TEC_DATA>::const_iterator j = Data.begin(); j != Data.end(); ++j)
 	{
-		std::pair<FLOAT64, FLOAT64> mm = j->minmax(Real_Max[0]*Real_Max[1]*Real_Max[2]);
+		std::pair<FLOAT64, FLOAT64> mm = j->minmax(Real_Max[0] * Real_Max[1] * Real_Max[2]);
 		W_FLOAT64(mm.first, of);//Min value
 		W_FLOAT64(mm.second, of);//Max value
 		zone_log.Data[j - Data.begin()].min = mm.first;
@@ -1122,96 +1090,96 @@ void TEC_ZONE::write_plt_data(FILE *of, const TEC_FILE &thisfile, TEC_ZONE_LOG &
 	{
 		char buf[100];
 		std::sprintf(buf, "     Dim = %i   Real_Max = [", Real_Dim);
-		if (echo) std::printf("%s", buf);
+		if (echo) { std::printf("%s", buf); }
 		zone_log.Echo_Text.push_back(buf);
 		for (int dd = 0; dd != Real_Dim; ++dd)
 		{
 			std::sprintf(buf, " %i", Real_Max[dd]);
-			if (echo) std::printf("%s", buf);
+			if (echo) { std::printf("%s", buf); }
 			*(zone_log.Echo_Text.end() - 1) += buf;
 		}
-		if (echo) std::printf(" ]\n");
+		if (echo) { std::printf(" ]\n"); }
 		*(zone_log.Echo_Text.end() - 1) += " ]";
 	}
 	if (Echo_Mode.test(4))
 	{
 		char buf[100];
-		if (echo) std::printf("     Org_Max = [");
+		if (echo) { std::printf("     Org_Max = ["); }
 		zone_log.Echo_Text.push_back("     Org_Max = [");
 		for (int dd = 0; dd != 3; ++dd)
 		{
 			std::sprintf(buf, " %i", Max[dd]);
-			if (echo) std::printf("%s", buf);
+			if (echo) { std::printf("%s", buf); }
 			*(zone_log.Echo_Text.end() - 1) += buf;
 		}
-		if (echo) std::printf(" ]\n");
+		if (echo) { std::printf(" ]\n"); }
 		*(zone_log.Echo_Text.end() - 1) += " ]";
 	}
 	if (Echo_Mode.test(5))
 	{
 		char buf[100];
-		if (echo) std::printf("     Skip = [");
+		if (echo) { std::printf("     Skip = ["); }
 		zone_log.Echo_Text.push_back("     Skip = [");
 		for (int dd = 0; dd != 3; ++dd)
 		{
 			std::sprintf(buf, " %i", Skip[dd]);
-			if (echo) std::printf("%s", buf);
+			if (echo) { std::printf("%s", buf); }
 			*(zone_log.Echo_Text.end() - 1) += buf;
 		}
-		if (echo) std::printf(" ]\n");
+		if (echo) { std::printf(" ]\n"); }
 		*(zone_log.Echo_Text.end() - 1) += " ]";
 	}
 	if (Echo_Mode.test(6))
 	{
 		char buf[100];
-		if (echo) std::printf("     Begin = [");
+		if (echo) { std::printf("     Begin = ["); }
 		zone_log.Echo_Text.push_back("     Begin = [");
 		for (int dd = 0; dd != 3; ++dd)
 		{
 			std::sprintf(buf, " %i", Begin[dd]);
-			if (echo) std::printf("%s", buf);
+			if (echo) { std::printf("%s", buf); }
 			*(zone_log.Echo_Text.end() - 1) += buf;
 		}
-		if (echo) std::printf(" ]");
+		if (echo) { std::printf(" ]"); }
 		*(zone_log.Echo_Text.end() - 1) += " ]";
 
-		if (echo) std::printf("   End = [");
+		if (echo) { std::printf("   End = ["); }
 		*(zone_log.Echo_Text.end() - 1) += " End = [";
 		for (int dd = 0; dd != 3; ++dd)
 		{
 			std::sprintf(buf, " %i", End[dd]);
-			if (echo) std::printf("%s", buf);
+			if (echo) { std::printf("%s", buf); }
 			*(zone_log.Echo_Text.end() - 1) += buf;
 		}
-		if (echo) std::printf(" ]\n");
+		if (echo) { std::printf(" ]\n"); }
 		*(zone_log.Echo_Text.end() - 1) += " ]";
 	}
 	if (Echo_Mode.test(7) && StrandId != -1)
 	{
 		char buf[100];
 		std::sprintf(buf, "     StrandId = %i SolutionTime = %le", StrandId, SolutionTime);
-		if (echo) std::printf("%s\n", buf);
+		if (echo) { std::printf("%s\n", buf); }
 		zone_log.Echo_Text.push_back(buf);
 	}
 
 	if (Echo_Mode.test(2))
 	{
-		if (echo) std::printf("     write variables:");
+		if (echo) { std::printf("     write variables:"); }
 		zone_log.Echo_Text.push_back("     write variables:");
 	}
 	for (std::vector<TEC_DATA>::iterator j = Data.begin(); j != Data.end(); ++j)
 	{
-		zone_log.Data[j- Data.begin()].file_pt = std::ftell(of);
+		zone_log.Data[j - Data.begin()].file_pt = std::ftell(of);
 		fwrite((const byte*)(j->buf), j->size, Real_Max[0]*Real_Max[1]*Real_Max[2], of);//Zone Data. Each variable is in data format as specified above
 		if (Echo_Mode.test(2))
 		{
-			if (echo) std::printf(" <%s>", thisfile.Variables[j - Data.begin()].c_str());
+			if (echo) { std::printf(" <%s>", thisfile.Variables[j - Data.begin()].c_str()); }
 			*(zone_log.Echo_Text.end() - 1) += (" <" + thisfile.Variables[j - Data.begin()] + ">");
 		}
 	}
 	if (Echo_Mode.test(2))
 	{
-		if (echo) std::printf("\n");
+		if (echo) { std::printf("\n"); }
 	}
 
 	realise_buf();
@@ -1223,7 +1191,7 @@ void TEC_ZONE::write_plt_data(FILE *of, const TEC_FILE &thisfile, TEC_ZONE_LOG &
 	{
 		char buf[100];
 		std::sprintf(buf, "     zone size: %.1lfMB", s_z);
-		if (echo) std::printf("%s\n", buf);
+		if (echo) { std::printf("%s\n", buf); }
 		zone_log.Echo_Text.push_back(buf);
 	}
 }
@@ -1237,7 +1205,7 @@ TEC_DATA::TEC_DATA()
 }
 
 template<typename T>
-void get_minmax(const T *data, size_t N, T &min, T &max)
+void get_minmax(const T* data, size_t N, T &min, T &max)
 {
 	min = data[0];
 	max = data[0];
@@ -1253,7 +1221,7 @@ void get_minmax(const T *data, size_t N, T &min, T &max)
 	}
 	for (size_t i = 0; i != n; ++i)
 	{
-		if (data[2 * i]>data[2 * i + 1])
+		if (data[2 * i] > data[2 * i + 1])
 		{
 			loc_min = data[2 * i + 1];
 			loc_max = data[2 * i];
@@ -1263,22 +1231,22 @@ void get_minmax(const T *data, size_t N, T &min, T &max)
 			loc_min = data[2 * i];
 			loc_max = data[2 * i + 1];
 		}
-		if (loc_min<min)
+		if (loc_min < min)
 		{
 			min = loc_min;
 		}
-		if (loc_max>max)
+		if (loc_max > max)
 		{
 			max = loc_max;
 		}
 	}
 	if (N % 2)
 	{
-		if (data[N - 1]<min)
+		if (data[N - 1] < min)
 		{
 			min = data[N - 1];
 		}
-		else if (data[N - 1]>max)
+		else if (data[N - 1] > max)
 		{
 			max = data[N - 1];
 		}
@@ -1293,7 +1261,7 @@ std::pair<FLOAT64, FLOAT64> TEC_DATA::minmax(size_t N) const
 	case TEC_DATA::TEC_FLOAT:
 	{
 		FLOAT32 min, max;
-		FLOAT32 *data = (FLOAT32 *)buf;
+		FLOAT32* data = (FLOAT32*)buf;
 		get_minmax<FLOAT32>(data, N, min, max);
 		ans.first = min;
 		ans.second = max;
@@ -1302,7 +1270,7 @@ std::pair<FLOAT64, FLOAT64> TEC_DATA::minmax(size_t N) const
 	case TEC_DATA::TEC_DOUBLE:
 	{
 		FLOAT64 min, max;
-		FLOAT64 *data = (FLOAT64 *)buf;
+		FLOAT64* data = (FLOAT64*)buf;
 		get_minmax<FLOAT64>(data, N, min, max);
 		ans.first = min;
 		ans.second = max;
@@ -1311,7 +1279,7 @@ std::pair<FLOAT64, FLOAT64> TEC_DATA::minmax(size_t N) const
 	case TEC_DATA::TEC_LONGINT:
 	{
 		longint min, max;
-		longint *data = (longint *)buf;
+		longint* data = (longint*)buf;
 		get_minmax<longint>(data, N, min, max);
 		ans.first = min;
 		ans.second = max;
@@ -1320,7 +1288,7 @@ std::pair<FLOAT64, FLOAT64> TEC_DATA::minmax(size_t N) const
 	case TEC_DATA::TEC_SHORTINT:
 	{
 		shortint min, max;
-		shortint *data = (shortint *)buf;
+		shortint* data = (shortint*)buf;
 		get_minmax<shortint>(data, N, min, max);
 		ans.first = min;
 		ans.second = max;
@@ -1329,7 +1297,7 @@ std::pair<FLOAT64, FLOAT64> TEC_DATA::minmax(size_t N) const
 	case TEC_DATA::TEC_BYTE:
 	{
 		byte min, max;
-		byte *data = (byte *)buf;
+		byte* data = (byte*)buf;
 		get_minmax<byte>(data, N, min, max);
 		ans.first = min;
 		ans.second = max;

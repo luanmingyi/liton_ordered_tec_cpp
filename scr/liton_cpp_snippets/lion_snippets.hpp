@@ -1,16 +1,22 @@
 #ifndef LITON_SNIPPET_HPP
 #define LITON_SNIPPET_HPP
 
+#include <cstdlib>
 #include <cstdio>
+
+#include <iostream>
+#include <sstream>
+#include <iomanip>
 #include <string>
 #include <stdexcept>
 #include <ctime>
 
 namespace liton_sp
 {
-	namespace file
+	class file
 	{
-		inline FILE* open_file_c(const std::string &fullname, const char* mode)
+	  public:
+		static inline FILE* open_file_c(const std::string &fullname, const char* mode)
 		{
 # ifdef __linux__
 			FILE* of;
@@ -29,11 +35,12 @@ namespace liton_sp
 # endif
 			return of;
 		}
-	}
+	};
 
-	namespace time
+	class time
 	{
-		inline std::string get_time(const std::string &format = "%Y%m%dT%H%M%S")
+	  public:
+		static inline std::string get_time(const std::string &format = "%Y%m%dT%H%M%S")
 		{
 			time_t time_c = std::time(NULL);
 			struct tm tm_c;
@@ -46,73 +53,86 @@ namespace liton_sp
 			std::strftime(buf, 100, format.c_str(), &tm_c);
 			return buf;
 		}
-	}
+	};
 
-	namespace env
+	class env
 	{
+	  public:
+		static const char* os()
+		{
 #ifdef _WIN32
-		const char os[] = "Windows 32 or Windows 64";
+			return "Windows 32 or Windows 64";
 #elif _WIN64
-		const char os[] = "Windows 64";
+			return "Windows 64";
 #elif __MINGW32__
-		const char os[] = "Windows32 by mingw compiler";
+			return "Windows32 by mingw compiler";
 #elif __CYGWIN__
-		const char os[] = "Cygwin";
+			return "Cygwin";
 #elif __linux__
-		const char os[] = "linux";
+			return "linux";
 #endif
-
+		}
+		static const char* compiler()
+		{
 #ifdef __INTEL_COMPILER
-		const char compiler[] = "Interl C++";
+			return "Interl C++";
 #elif _MSC_VER
-		const char compiler[] = "Visual C++";
+			return "Visual C++";
 #elif __GNUC__
-		const char compiler[] = "GCC";
+			return "GCC";
 #endif
-
+		}
+		static const char* cpp_std()
+		{
 #if (__cplusplus < 201103L && !defined(_MSC_VER)) || (defined(_MSC_VER) && (_MSC_VER < 1700))
-		const char cpp_std[] = "C++03";
+			return "C++03";
 #else
-		const char cpp_std[] = "C++11";
+			return "C++11";
 #endif
-
+		}
+		static const char* debug_mode()
+		{
 #if defined(_DEBUG) || defined(DEBUG)
 #ifndef _DEBUG
 #define _DEBUG
 #endif
-		const char debug_mode[] = "DEBUG";
+			return "DEBUG";
 #elif defined(_NDEBUG) || !defined(_DEBUG)
-		const char debug_mode[] = "RELEASE";
+			return "RELEASE";
 #endif
-
-		void disp_env(std::ostream &out)
-		{
-			out << os << std::endl;
-			out << compiler << std::endl;
-			out << cpp_std << std::endl;
-			out << debug_mode << std::endl;
 		}
-	}
-
-	namespace debug
-	{
-		template<typename Expression>
-		void exec_except(const Expression &exp, ostream &out, ostream &except_out)
+		static void disp_env(std::ostream &out)
 		{
+			out << os() << std::endl;
+			out << compiler() << std::endl;
+			out << cpp_std() << std::endl;
+			out << debug_mode() << std::endl;
+		}
+	};
+
+	class debug
+	{
+	  public:
+		template<typename Expression>
+		static void exec_except(const Expression &exp, std::ostream &out, std::ostream &except_out)
+		{
+			std::ostringstream tran;
+			tran << std::setw(10) << std::setfill('0') << std::rand();
+			std::string timestr = "[" + time::get_time() + "|" + tran.str() + "]: ";
 			try
 			{
 				exp();
-				out << "no exception" << std::endl;
+				out << timestr << "no exception" << std::endl;
 			}
 			catch (const std::exception &err)
 			{
-				out << "with exception" << std::endl;
-				except_out << err.what() << std::endl;
+				out << timestr << "with exception" << std::endl;
+				except_out << timestr << err.what() << std::endl;
 			}
 		}
 
 		template<typename Expression>
-		double exec_time(const unsigned &N, const Expression &exp)
+		static double exec_time(const unsigned &N, const Expression &exp)
 		{
 			double t = 0;
 			for (unsigned i = 0; i != N; ++i)
@@ -124,7 +144,7 @@ namespace liton_sp
 			t /= static_cast<double>(N);
 			return t;
 		}
-	}
+	};
 }
 
 #endif

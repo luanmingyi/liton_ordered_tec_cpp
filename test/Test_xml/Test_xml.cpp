@@ -2,8 +2,8 @@
 # include <fstream>
 # include <cstdlib>
 using namespace std;
-# include "../../scr/tinyxml2.h"
-# include "../../scr/ordered_tec.h"
+# include "../../scr/tinyxml2/tinyxml2.h"
+# include "../../scr/liton_ordered_tec/ordered_tec.h"
 using namespace liton_ot;
 
 # define DATATYPE double
