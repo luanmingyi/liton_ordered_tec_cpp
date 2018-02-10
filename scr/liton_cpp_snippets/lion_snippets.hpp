@@ -18,17 +18,17 @@ namespace liton_sp
 	  public:
 		static inline FILE* open_file_c(const std::string &fullname, const char* mode)
 		{
-# ifdef __linux__
+# ifdef _MSC_VER
 			FILE* of;
-			of = std::fopen(fullname.c_str(), mode);
-			if (of == NULL)
+			errno_t err = fopen_s(&of, fullname.c_str(), mode);
+			if (err != 0)
 			{
 				throw std::runtime_error(std::string("can not open file ") + fullname);
 			}
 # else
 			FILE* of;
-			errno_t err = fopen_s(&of, fullname.c_str(), mode);
-			if (err != 0)
+			of = std::fopen(fullname.c_str(), mode);
+			if (of == NULL)
 			{
 				throw std::runtime_error(std::string("can not open file ") + fullname);
 			}
@@ -44,10 +44,10 @@ namespace liton_sp
 		{
 			time_t time_c = std::time(NULL);
 			struct tm tm_c;
-# ifdef __linux__
-			localtime_r(&time_c, &tm_c);
-# else
+# ifdef _MSC_VER
 			localtime_s(&tm_c, &time_c);
+# else
+			localtime_r(&time_c, &tm_c);
 # endif
 			char buf[100];
 			std::strftime(buf, 100, format.c_str(), &tm_c);
