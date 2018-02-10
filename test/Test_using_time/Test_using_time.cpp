@@ -15,9 +15,9 @@ void write_plt(TEC_FILE & tecfile, ofstream &log)
 		tecfile.write_plt(false);
 		tecfile.last_log.write_echo(log);
 		log << "speed: " 
-			<< (tecfile.Zones[0].get_real_size()[0]
-				*tecfile.Zones[0].get_real_size()[1]
-				*tecfile.Zones[0].get_real_size()[2]) / tecfile.last_log.UsingTime 
+			<< (tecfile.Zones[0].get_real_max(0)
+				*tecfile.Zones[0].get_real_max(1)
+				*tecfile.Zones[0].get_real_max(2)) / tecfile.last_log.UsingTime 
 			<< " N/s"
 			<< endl;
 	}

@@ -11,10 +11,10 @@ void get_size(TEC_FILE &tecfile, ostream &log)
 	int Max[3], Dim;
 	try
 	{
-		Max[0] = tecfile.Zones[0].get_real_size()[0];
-		Max[1] = tecfile.Zones[0].get_real_size()[1];
-		Max[2] = tecfile.Zones[0].get_real_size()[2];
-		Dim = *tecfile.Zones[0].get_real_size("realdim");
+		Max[0] = tecfile.Zones[0].get_real_max(0);
+		Max[1] = tecfile.Zones[0].get_real_max(1);
+		Max[2] = tecfile.Zones[0].get_real_max(2);
+		Dim = tecfile.Zones[0].get_real_dim();
 	}
 	catch (runtime_error err)
 	{

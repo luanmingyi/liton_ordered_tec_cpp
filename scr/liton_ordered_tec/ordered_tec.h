@@ -132,7 +132,6 @@ namespace liton_ot
 
 	/**
 	 * @brief class related to the log of tec files
-	 *
 	 */
 	class TEC_FILE_LOG : public TEC_FILE_BASE
 	{
@@ -154,7 +153,6 @@ namespace liton_ot
 
 		/**
 		 * @brief write echo to (FilePath)/(FileName).txt
-		 *
 		 */
 		void write_echo();
 		/**
@@ -203,7 +201,6 @@ namespace liton_ot
 
 	/**
 	 * @brief class related to the log of tec zones
-	 *
 	 */
 	class TEC_ZONE_LOG : public TEC_ZONE_BASE
 	{
@@ -221,7 +218,6 @@ namespace liton_ot
 
 		/**
 		 * @brief write echo to (FilePath)/Zone_(ZoneName).txt
-		 *
 		 */
 		void write_echo();
 		/**
@@ -270,7 +266,6 @@ namespace liton_ot
 
 	/**
 	 * @brief class related to the log of tec data
-	 *
 	 */
 	class TEC_DATA_LOG : public TEC_DATA_BASE
 	{
@@ -285,7 +280,6 @@ namespace liton_ot
 
 	/**
 	 * @brief class related to the tec files
-	 *
 	 */
 	class TEC_FILE : public TEC_FILE_BASE
 	{
@@ -366,7 +360,6 @@ namespace liton_ot
 
 	/**
 	 * @brief class related to the tec zones
-	 *
 	 */
 	class TEC_ZONE : public TEC_ZONE_BASE
 	{
@@ -400,7 +393,23 @@ namespace liton_ot
 		 * @param name zone name, default is untitled_zone
 		 */
 		explicit TEC_ZONE(const std::string &name = "untitled_zone");
-		const INT32* get_real_size(const std::string &name = "realmax");
+		/**
+		 * @brief get real max
+		 * 
+		 * @param d dimension to get
+		 */
+		INT32 get_real_max(unsigned d);
+		/**
+		 * @brief get real max in row-major order
+		 * 
+		 * @param DIM dimensions of the original data
+		 * @param d the dimension to get in row-major order
+		 */
+		INT32 get_real_max_C(const unsigned DIM, const unsigned &d);
+		/**
+		 * @brief get real dim
+		 */
+		INT32 get_real_dim();
 		/**
 		 * @brief add string type of auxiliary data
 		 *
@@ -431,7 +440,6 @@ namespace liton_ot
 
 	/**
 	 * @brief class related to the tec data
-	 *
 	 */
 	class TEC_DATA : public TEC_DATA_BASE
 	{

@@ -815,21 +815,22 @@ TEC_ZONE::TEC_ZONE(const std::string &name)
 	echo_mode();
 }
 
-const INT32* TEC_ZONE::get_real_size(const std::string &name)
+INT32 TEC_ZONE::get_real_max(unsigned d)
 {
 	gather_real_size();
-	if (name.compare("realmax") == 0)
-	{
-		return Real_Max;
-	}
-	else if (name.compare("realdim") == 0)
-	{
-		return &Real_Dim;
-	}
-	else
-	{
-		throw std::out_of_range("get_real_size : size code wrong");
-	}
+	return Real_Max[d];
+}
+
+INT32 TEC_ZONE::get_real_max_C(const unsigned DIM, const unsigned & d)
+{
+	gather_real_size();
+	return Real_Max[DIM - 1 - d];
+}
+
+INT32 TEC_ZONE::get_real_dim()
+{
+	gather_real_size();
+	return Real_Dim;
 }
 
 bool TEC_ZONE::add_auxiliary_data(const std::string &name, const std::string &value)
