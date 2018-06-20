@@ -9,8 +9,10 @@
 #include<ctime>
 #include<cerrno>
 
-#include"../tinyxml2/tinyxml2.h"
 #include"../liton_cpp_snippets/lion_snippets.hpp"
+#ifdef OT_TINYXML
+	#include"../tinyxml2/tinyxml2.h"
+#endif
 #include"ordered_tec.h"
 
 #define TEC_INT32_S 4
@@ -151,6 +153,7 @@ void TEC_FILE_LOG::write_xml(std::ofstream &of, int depth)
 	}
 }
 
+#ifdef OT_TINYXML
 void TEC_FILE_LOG::read_xml(const tinyxml2::XMLElement* file_root)
 {
 	FileName = file_root->Attribute("FileName");
@@ -186,6 +189,7 @@ void TEC_FILE_LOG::read_xml(const tinyxml2::XMLElement* file_root)
 	gen_xml();
 	gen_json();
 }
+#endif
 
 void TEC_FILE_LOG::gen_json()
 {
@@ -359,6 +363,7 @@ void TEC_ZONE_LOG::write_xml(std::ofstream &of, int depth)
 	}
 }
 
+#ifdef OT_TINYXML
 void TEC_ZONE_LOG::read_xml(const tinyxml2::XMLElement* zone_root)
 {
 	ZoneName = zone_root->FirstChildElement("ZoneName")->GetText();
@@ -426,6 +431,7 @@ void TEC_ZONE_LOG::read_xml(const tinyxml2::XMLElement* zone_root)
 		temp = temp->NextSiblingElement();
 	}
 }
+#endif
 
 void TEC_ZONE_LOG::gen_json()
 {
@@ -821,7 +827,7 @@ INT32 TEC_ZONE::get_real_max(unsigned d)
 	return Real_Max[d];
 }
 
-INT32 TEC_ZONE::get_real_max_C(const unsigned DIM, const unsigned & d)
+INT32 TEC_ZONE::get_real_max_C(const unsigned DIM, const unsigned &d)
 {
 	gather_real_size();
 	return Real_Max[DIM - 1 - d];
