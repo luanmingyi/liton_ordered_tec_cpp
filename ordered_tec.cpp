@@ -1,4 +1,5 @@
 #include<cstddef>
+#include<cstring>
 #include<string>
 #include<vector>
 #include<map>
