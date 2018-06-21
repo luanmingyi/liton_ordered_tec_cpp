@@ -1,7 +1,7 @@
 /**
  * @file ordered_tec.h
  * @author lmy
- * 
+ *
  */
 # ifndef ORDERED_TEC_H
 # define ORDERED_TEC_H
@@ -12,9 +12,13 @@
 #include<map>
 #include<bitset>
 #include<fstream>
+#include<sstream>
 #include<typeinfo>
 #include<stdexcept>
-#include"../tinyxml2/tinyxml2.h"
+
+#ifdef OT_TINYXML
+	#include"../tinyxml2/tinyxml2.h"
+#endif
 
 /**
  * @brief namespace ordered_tec
@@ -61,6 +65,26 @@ namespace liton_ot
 		 */
 		INT32 FileType;
 		std::map<std::string, std::string> Auxiliary;//<auxiliary in file
+	  public:
+		/**
+		 * @brief Get the auxiliary data by name
+		 *
+		 * @tparam NUMT data type
+		 * @param name data name
+		 * @param data var to save data
+		 */
+		template<typename NUMT>
+		void get_auxiliary_data(const std::string &name, NUMT &data) const
+		{
+			std::istringstream tran;
+			std::map<std::string, std::string>::const_iterator aux_id = Auxiliary.find(name);
+			if (aux_id == Auxiliary.end())
+			{
+				throw(std::runtime_error("can not find data [" + name + "] in auxiliary data of file [" + FileName + "]"));
+			}
+			tran.str(aux_id->second);
+			tran >> data;
+		}
 	};
 
 	class TEC_ZONE_BASE
@@ -81,33 +105,52 @@ namespace liton_ot
 		std::map<std::string, std::string> Auxiliary;///<auxiliary in zone
 	  public:
 		/**
+		 * @brief Get the auxiliary data by name
+		 *
+		 * @tparam NUMT data type
+		 * @param name data name
+		 * @param data var to save data
+		 */
+		template<typename NUMT>
+		void get_auxiliary_data(const std::string &name, NUMT &data) const
+		{
+			std::istringstream tran;
+			std::map<std::string, std::string>::const_iterator aux_id = Auxiliary.find(name);
+			if (aux_id == Auxiliary.end())
+			{
+				throw(std::runtime_error("can not find data [" + name + "] in auxiliary data of zone [" + ZoneName + "]"));
+			}
+			tran.str(aux_id->second);
+			tran >> data;
+		}
+		/**
 		 * @brief get the reference of Max in row-major order
-		 * 
+		 *
 		 * @param DIM dimensions of the original data
 		 * @param d the dimension to get in row-major order
 		 */
-		inline INT32 & Max_C(const unsigned DIM, const unsigned &d) { return Max[DIM - 1 - d]; }
+		inline INT32 &Max_C(const unsigned DIM, const unsigned &d) { return Max[DIM - 1 - d]; }
 		/**
 		 * @brief get the reference of Begin in row-major order
-		 * 
+		 *
 		 * @param DIM dimensions of the original data
 		 * @param d the dimension to get in row-major order
 		 */
-		inline INT32 & Begin_C(const unsigned DIM, const unsigned &d) { return Begin[DIM - 1 - d]; }
+		inline INT32 &Begin_C(const unsigned DIM, const unsigned &d) { return Begin[DIM - 1 - d]; }
 		/**
 		 * @brief get the reference of End in row-major order
-		 * 
+		 *
 		 * @param DIM dimensions of the original data
 		 * @param d the dimension to get in row-major order
 		 */
-		inline INT32 & End_C(const unsigned DIM, const unsigned &d) { return End[DIM - 1 - d]; }
+		inline INT32 &End_C(const unsigned DIM, const unsigned &d) { return End[DIM - 1 - d]; }
 		/**
 		 * @brief get the reference of Skip in row-major order
-		 * 
+		 *
 		 * @param DIM dimensions of the original data
 		 * @param d the dimension to get in row-major order
 		 */
-		inline INT32 & Skip_C(const unsigned DIM, const unsigned &d) { return Skip[DIM - 1 - d]; }
+		inline INT32 &Skip_C(const unsigned DIM, const unsigned &d) { return Skip[DIM - 1 - d]; }
 	};
 
 	class TEC_DATA_BASE
@@ -188,12 +231,14 @@ namespace liton_ot
 		 */
 		void write_xml(std::ofstream &of, int depth = 0);
 
+#ifdef OT_TINYXML
 		/**
 		 * @brief read file logs form xml file
 		 *
 		 * @param file_root node "File"
 		 */
 		void read_xml(const tinyxml2::XMLElement* file_root);
+#endif
 	  protected:
 		void gen_json();
 		void gen_xml();
@@ -253,12 +298,14 @@ namespace liton_ot
 		 */
 		void write_xml(std::ofstream &of, int depth = 0);
 
+#ifdef OT_TINYXML
 		/**
 		 * @brief read zone logs form xml file
 		 *
 		 * @param zone_root node "Zone"
 		 */
 		void read_xml(const tinyxml2::XMLElement* zone_root);
+#endif
 	  protected:
 		void gen_json();
 		void gen_xml();
@@ -288,7 +335,7 @@ namespace liton_ot
 
 		/**
 		 * @brief flags to control echo
-		 * 
+		 *
 		 * - usingtime
 		 * - time
 		 * - size
@@ -303,7 +350,7 @@ namespace liton_ot
 	  public:
 		/**
 		 * @brief construction function
-		 * 
+		 *
 		 * @param name file name, default is "untitled_file"
 		 * @param path file path, default is "."
 		 * @param title file title, default is "untitled"
@@ -335,7 +382,7 @@ namespace liton_ot
 		 * - full all
 		 * - simple time, file_head
 		 * - none none
-		 * 
+		 *
 		 * @param zone zone mode
 		 * - brief(default) max_real, zone_head
 		 * - full all
@@ -369,7 +416,7 @@ namespace liton_ot
 
 		/**
 		 * @brief flags to control echo
-		 * 
+		 *
 		 * - size
 		 * - stdid & soltime
 		 * - begin & end
@@ -395,13 +442,13 @@ namespace liton_ot
 		explicit TEC_ZONE(const std::string &name = "untitled_zone");
 		/**
 		 * @brief get real max
-		 * 
+		 *
 		 * @param d dimension to get
 		 */
 		INT32 get_real_max(unsigned d);
 		/**
 		 * @brief get real max in row-major order
-		 * 
+		 *
 		 * @param DIM dimensions of the original data
 		 * @param d the dimension to get in row-major order
 		 */
