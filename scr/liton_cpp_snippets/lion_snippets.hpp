@@ -11,6 +11,10 @@
 #include <stdexcept>
 #include <ctime>
 
+#ifdef SP_TINYXML
+	#include "../tinyxml2/tinyxml2.h"
+#endif
+
 namespace liton_sp
 {
 	class file
@@ -144,6 +148,52 @@ namespace liton_sp
 			t /= static_cast<double>(N);
 			return t;
 		}
+	};
+
+	class xml
+	{
+	  public:
+#ifdef SP_TINYXML
+		static const tinyxml2::XMLElement* load_xml(tinyxml2::XMLDocument &xml_file, std::string xml_file_name, std::string root_node_name)
+		{
+			tinyxml2::XMLError err_code = xml_file.LoadFile(xml_file_name.c_str());
+			if (err_code != 0)
+			{
+				std::ostringstream tran;
+				if (err_code == tinyxml2::XML_ERROR_FILE_NOT_FOUND)
+				{
+					tran << "case file " << xml_file_name << " not found";
+				}
+				else
+				{
+					tran << "error when loading file " << xml_file_name << ": error ID " << err_code;
+				}
+				throw(std::runtime_error(tran.str()));
+			}
+			const tinyxml2::XMLElement* xml_root = xml_file.FirstChildElement(root_node_name.c_str());
+			if (xml_root == 0)
+			{
+				std::ostringstream tran;
+				tran << "node \"" << root_node_name << "\" not found in " << xml_file_name;
+				throw(std::runtime_error(tran.str()));
+			}
+			return xml_root;
+		}
+
+		static void check_xmlnode(const tinyxml2::XMLElement* xml, const std::string &node_name)
+		{
+			if (xml->FirstChildElement(node_name.c_str()) == 0)
+			{
+				throw(std::runtime_error("node \"" + node_name + "\" not found in node \"" + xml->Name() + "\""));
+			}
+		}
+
+		static const tinyxml2::XMLElement* get_xmlnode(const tinyxml2::XMLElement* xml, const std::string &node_name)
+		{
+			check_xmlnode(xml,node_name);
+			return xml->FirstChildElement(node_name.c_str());
+		}
+#endif
 	};
 }
 
