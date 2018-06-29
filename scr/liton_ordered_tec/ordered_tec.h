@@ -129,28 +129,35 @@ namespace liton_ot
 		 * @param DIM dimensions of the original data
 		 * @param d the dimension to get in row-major order
 		 */
-		inline INT32 &Max_C(const unsigned DIM, const unsigned &d) { return Max[DIM - 1 - d]; }
+		inline INT32 &Max_C(const unsigned DIM, const unsigned d) { return Max[DIM - 1 - d]; }
 		/**
 		 * @brief get the reference of Begin in row-major order
 		 *
 		 * @param DIM dimensions of the original data
 		 * @param d the dimension to get in row-major order
 		 */
-		inline INT32 &Begin_C(const unsigned DIM, const unsigned &d) { return Begin[DIM - 1 - d]; }
+		inline INT32 &Begin_C(const unsigned DIM, const unsigned d) { return Begin[DIM - 1 - d]; }
 		/**
 		 * @brief get the reference of End in row-major order
 		 *
 		 * @param DIM dimensions of the original data
 		 * @param d the dimension to get in row-major order
 		 */
-		inline INT32 &End_C(const unsigned DIM, const unsigned &d) { return End[DIM - 1 - d]; }
+		inline INT32 &End_C(const unsigned DIM, const unsigned d) { return End[DIM - 1 - d]; }
 		/**
 		 * @brief get the reference of Skip in row-major order
 		 *
 		 * @param DIM dimensions of the original data
 		 * @param d the dimension to get in row-major order
 		 */
-		inline INT32 &Skip_C(const unsigned DIM, const unsigned &d) { return Skip[DIM - 1 - d]; }
+		inline INT32 &Skip_C(const unsigned DIM, const unsigned d) { return Skip[DIM - 1 - d]; }
+		/**
+		 * @brief get the value of Real_Max in row-major order
+		 *
+		 * @param DIM dimensions of the original data
+		 * @param d the dimension to get in row-major order
+		 */
+		inline INT32 Real_Max_C(const unsigned DIM, const unsigned d) const { return Real_Max[DIM - 1 - d]; }
 	};
 
 	class TEC_DATA_BASE
