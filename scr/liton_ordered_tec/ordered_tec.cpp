@@ -426,7 +426,7 @@ void TEC_ZONE_LOG::read_xml(const tinyxml2::XMLElement* zone_root)
 		temp->QueryUnsignedAttribute("size_i", &si_temp);
 		(Data.end() - 1)->size = si_temp;
 		std::string pt_temp = temp->Attribute("file_pt");
-		(Data.end() - 1)->file_pt = std::strtol(pt_temp.c_str(), '\0', 10);
+		(Data.end() - 1)->file_pt = std::strtol(pt_temp.c_str(), NULL, 10);
 		temp->QueryDoubleAttribute("min", &((Data.end() - 1)->min));
 		temp->QueryDoubleAttribute("max", &((Data.end() - 1)->max));
 		temp = temp->NextSiblingElement();
