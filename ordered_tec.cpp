@@ -1,4 +1,5 @@
 #include<cstddef>
+#include<cstring>
 #include<string>
 #include<vector>
 #include<map>
@@ -9,8 +10,10 @@
 #include<ctime>
 #include<cerrno>
 
-#include"../dep/tinyxml2/tinyxml2.h"
-#include"../dep/liton_cpp_snippets/lion_snippets.hpp"
+#include"../liton_cpp_snippets/lion_snippets.hpp"
+#ifdef OT_TINYXML
+	#include"../tinyxml2/tinyxml2.h"
+#endif
 #include"ordered_tec.h"
 
 #define TEC_INT32_S 4
@@ -151,6 +154,7 @@ void TEC_FILE_LOG::write_xml(std::ofstream &of, int depth)
 	}
 }
 
+#ifdef OT_TINYXML
 void TEC_FILE_LOG::read_xml(const tinyxml2::XMLElement* file_root)
 {
 	FileName = file_root->Attribute("FileName");
@@ -186,6 +190,7 @@ void TEC_FILE_LOG::read_xml(const tinyxml2::XMLElement* file_root)
 	gen_xml();
 	gen_json();
 }
+#endif
 
 void TEC_FILE_LOG::gen_json()
 {
@@ -359,6 +364,7 @@ void TEC_ZONE_LOG::write_xml(std::ofstream &of, int depth)
 	}
 }
 
+#ifdef OT_TINYXML
 void TEC_ZONE_LOG::read_xml(const tinyxml2::XMLElement* zone_root)
 {
 	ZoneName = zone_root->FirstChildElement("ZoneName")->GetText();
@@ -420,12 +426,13 @@ void TEC_ZONE_LOG::read_xml(const tinyxml2::XMLElement* zone_root)
 		temp->QueryUnsignedAttribute("size_i", &si_temp);
 		(Data.end() - 1)->size = si_temp;
 		std::string pt_temp = temp->Attribute("file_pt");
-		(Data.end() - 1)->file_pt = std::strtol(pt_temp.c_str(), '\0', 10);
+		(Data.end() - 1)->file_pt = std::strtol(pt_temp.c_str(), NULL, 10);
 		temp->QueryDoubleAttribute("min", &((Data.end() - 1)->min));
 		temp->QueryDoubleAttribute("max", &((Data.end() - 1)->max));
 		temp = temp->NextSiblingElement();
 	}
 }
+#endif
 
 void TEC_ZONE_LOG::gen_json()
 {
@@ -815,21 +822,22 @@ TEC_ZONE::TEC_ZONE(const std::string &name)
 	echo_mode();
 }
 
-const INT32* TEC_ZONE::get_real_size(const std::string &name)
+INT32 TEC_ZONE::get_real_max(unsigned d)
 {
 	gather_real_size();
-	if (name.compare("realmax") == 0)
-	{
-		return Real_Max;
-	}
-	else if (name.compare("realdim") == 0)
-	{
-		return &Real_Dim;
-	}
-	else
-	{
-		throw std::out_of_range("get_real_size : size code wrong");
-	}
+	return Real_Max[d];
+}
+
+INT32 TEC_ZONE::get_real_max_C(const unsigned DIM, const unsigned &d)
+{
+	gather_real_size();
+	return Real_Max[DIM - 1 - d];
+}
+
+INT32 TEC_ZONE::get_real_dim()
+{
+	gather_real_size();
+	return Real_Dim;
 }
 
 bool TEC_ZONE::add_auxiliary_data(const std::string &name, const std::string &value)
