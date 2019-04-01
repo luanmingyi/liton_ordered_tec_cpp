@@ -1,19 +1,19 @@
 # include <iostream>
 # include <cmath>
 using namespace std;
-# include "../../scr/liton_ordered_tec/ordered_tec.h"
+# include "ordered_tec.h"
 using namespace liton_ot;
 
 # define DATATYPE double
-int main(int argc,char **argv)
+int main(int argc, char** argv)
 {
-	DATATYPE *x, *y, *z;
-	size_t NI=1000,NJ=2000;
+	DATATYPE* x, *y, *z;
+	size_t NI = 1000, NJ = 2000;
 	try
 	{
-		x = new DATATYPE[NI*NJ];
-		y = new DATATYPE[NI*NJ];
-		z = new DATATYPE[NI*NJ];
+		x = new DATATYPE[NI * NJ];
+		y = new DATATYPE[NI * NJ];
+		z = new DATATYPE[NI * NJ];
 	}
 	catch (...)
 	{
@@ -24,9 +24,9 @@ int main(int argc,char **argv)
 	{
 		for (int i = 0; i != NI; ++i)
 		{
-			x[i + j*NI] = j;
-			y[i + j*NI] = i;
-			z[i + j*NI] = sin(x[i + j*NI]/500) - cos(y[i + j*NI] /500);
+			x[i + j * NI] = j;
+			y[i + j * NI] = i;
+			z[i + j * NI] = sin(x[i + j * NI] / 500) - cos(y[i + j * NI] / 500);
 		}
 	}
 
@@ -46,7 +46,7 @@ int main(int argc,char **argv)
 	}
 	catch(runtime_error err)
 	{
-		cerr<<"runtime_error: "<<err.what()<<endl;
+		cerr << "runtime_error: " << err.what() << endl;
 	}
 
 	delete [] x;

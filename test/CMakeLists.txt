@@ -2,14 +2,15 @@ cmake_minimum_required (VERSION 3.5)
 
 project(liton_ordered_tec)
 
-add_library(tinyxml STATIC "../../scr/tinyxml2/tinyxml2.cpp")
+find_package(tinyxml2 REQUIRED)
+find_package(snippets REQUIRED)
 
-add_library(ordered_tec STATIC "../scr/liton_ordered_tec/ordered_tec.cpp")
-target_include_directories(ordered_tec PUBLIC "../scr/liton_ordered_tec")
+add_library(ordered_tec STATIC "../scr/ordered_tec.cpp")
+target_include_directories(ordered_tec PUBLIC "../scr")
 target_compile_definitions(ordered_tec
 PUBLIC "$<$<CXX_COMPILER_ID:MSVC>:_CRT_SECURE_NO_WARNINGS>"
 PUBLIC OT_TINYXML)
-target_link_libraries(ordered_tec tinyxml)
+target_link_libraries(ordered_tec tinyxml2::tinyxml2 liton::snippets)
 
 enable_testing()
 add_subdirectory(Test_single_zone)

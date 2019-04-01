@@ -3,11 +3,11 @@
 # include <sstream>
 # include <stdio.h>
 # include <stdlib.h>
-# include "../../scr/liton_ordered_tec/ordered_tec.h"
+# include "ordered_tec.h"
 using namespace liton_ot;
 
 # define DATATYPE double
-int main(int argc,char **argv)
+int main(int argc, char** argv)
 {
 # ifdef __linux__
 	std::cout << "os: Linus" << std::endl;
@@ -19,13 +19,13 @@ int main(int argc,char **argv)
 	system("mkdir test_04");
 # endif
 
-	DATATYPE *x, *y, *z;
+	DATATYPE* x, *y, *z;
 	size_t NI = 1000, NJ = 2000;
 	try
 	{
-		x = new DATATYPE[NI*NJ];
-		y = new DATATYPE[NI*NJ];
-		z = new DATATYPE[NI*NJ];
+		x = new DATATYPE[NI * NJ];
+		y = new DATATYPE[NI * NJ];
+		z = new DATATYPE[NI * NJ];
 	}
 	catch (...)
 	{
@@ -37,23 +37,23 @@ int main(int argc,char **argv)
 	{
 		for (int i = 0; i != NI; ++i)
 		{
-			x[i + j*NI] = j*0.01;
-			y[i + j*NI] = i*0.01;
+			x[i + j * NI] = j * 0.01;
+			y[i + j * NI] = i * 0.01;
 		}
 	}
 
 	TEC_FILE tecfile("file_g", "./test_04", "test_04_grid");
-	tecfile.FileType=1;
+	tecfile.FileType = 1;
 	tecfile.Variables.push_back("x");
 	tecfile.Variables.push_back("y");
 	tecfile.Zones.push_back(TEC_ZONE("grid"));
-	tecfile.Zones[0].Max[0]=NI;
-	tecfile.Zones[0].Max[1]=NJ;
+	tecfile.Zones[0].Max[0] = NI;
+	tecfile.Zones[0].Max[1] = NJ;
 	tecfile.Zones[0].Data.push_back(TEC_DATA(x));
 	tecfile.Zones[0].Data.push_back(TEC_DATA(y));
-	tecfile.Zones[0].Skip[0]=10;
-	tecfile.Zones[0].Skip[1]=10;
-	tecfile.Zones[0].StrandId=-1;
+	tecfile.Zones[0].Skip[0] = 10;
+	tecfile.Zones[0].Skip[1] = 10;
+	tecfile.Zones[0].StrandId = -1;
 
 	try
 	{
@@ -65,16 +65,16 @@ int main(int argc,char **argv)
 	}
 	catch(std::runtime_error err)
 	{
-		std::cerr<<"runtime_error: "<<err.what()<< std::endl;
+		std::cerr << "runtime_error: " << err.what() << std::endl;
 	}
 
-	tecfile.Title="test_04_solution";
-	tecfile.FileType=2;
+	tecfile.Title = "test_04_solution";
+	tecfile.FileType = 2;
 	tecfile.Variables.clear();
 	tecfile.Variables.push_back("z");
 	tecfile.Zones[0].Data.clear();
 	tecfile.Zones[0].Data.push_back(TEC_DATA(z));
-	tecfile.Zones[0].StrandId=0;
+	tecfile.Zones[0].StrandId = 0;
 	tecfile.set_echo_mode("simple", "none");
 	std::ofstream of_j, of_x;
 	of_j.open("test_04.json");
@@ -92,18 +92,18 @@ int main(int argc,char **argv)
 	of_j << "[" << std::endl;
 	of_x << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl;
 	of_x << "<Files>" << std::endl;
-	for(int n=0;n!=30;++n)
+	for(int n = 0; n != 30; ++n)
 	{
 		for (int j = 0; j != NJ; ++j)
 		{
 			for (int i = 0; i != NI; ++i)
 			{
-				z[i + j*NI] = sin(x[i + j*NI]/2+n/5.0)+cos(y[i + j*NI]/2+n/5.0);
+				z[i + j * NI] = sin(x[i + j * NI] / 2 + n / 5.0) + cos(y[i + j * NI] / 2 + n / 5.0);
 			}
 		}
 		std::stringstream ss;
-		ss<<n;
-		tecfile.FileName= std::string("file_s_")+ss.str();
+		ss << n;
+		tecfile.FileName = std::string("file_s_") + ss.str();
 		tecfile.Zones[0].ZoneName = std::string("s_") + ss.str();
 		ss.str("");
 		tecfile.Zones[0].SolutionTime = n;
@@ -115,7 +115,7 @@ int main(int argc,char **argv)
 		}
 		catch(std::runtime_error err)
 		{
-			std::cerr<<"runtime_error: "<<err.what()<< std::endl;
+			std::cerr << "runtime_error: " << err.what() << std::endl;
 		}
 		if (n != 30 - 1)
 		{

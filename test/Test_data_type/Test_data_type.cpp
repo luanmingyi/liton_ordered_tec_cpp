@@ -1,11 +1,11 @@
 # include <iostream>
 # include <cmath>
 using namespace std;
-# include "../../scr/liton_ordered_tec/ordered_tec.h"
+# include "ordered_tec.h"
 using namespace liton_ot;
 
 template<typename T>
-void set_data(T *data, TEC_FILE &tecfile)
+void set_data(T* data, TEC_FILE &tecfile)
 {
 	int NI = tecfile.Zones[0].Max[0];
 	int NJ = tecfile.Zones[0].Max[1];
@@ -13,7 +13,7 @@ void set_data(T *data, TEC_FILE &tecfile)
 	{
 		for (int i = 0; i != NI; ++i)
 		{
-			data[i + j*NI] = static_cast<T>(5 * (sin(static_cast<double>(j) / 500) - cos(static_cast<double>(i) / 500)));
+			data[i + j * NI] = static_cast<T>(5 * (sin(static_cast<double>(j) / 500) - cos(static_cast<double>(i) / 500)));
 		}
 	}
 	tecfile.Zones.push_back(tecfile.Zones[0]);
@@ -29,25 +29,25 @@ void set_data(T *data, TEC_FILE &tecfile)
 	}
 }
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
-	double *x, *y;
-	signed char *p_byte;
-	short int *p_shortint;
-	int *p_int;
-	float *p_float;
-	double *p_double;
+	double* x, *y;
+	signed char* p_byte;
+	short int* p_shortint;
+	int* p_int;
+	float* p_float;
+	double* p_double;
 
 	size_t NI = 1000, NJ = 2000;
 	try
 	{
-		x = new double[NI*NJ];
-		y = new double[NI*NJ];
-		p_byte = new signed char[NI*NJ];
-		p_shortint = new short int[NI*NJ];
-		p_int = new int[NI*NJ];
-		p_float = new float[NI*NJ];
-		p_double = new double[NI*NJ];
+		x = new double[NI * NJ];
+		y = new double[NI * NJ];
+		p_byte = new signed char[NI * NJ];
+		p_shortint = new short int[NI * NJ];
+		p_int = new int[NI * NJ];
+		p_float = new float[NI * NJ];
+		p_double = new double[NI * NJ];
 	}
 	catch (...)
 	{
@@ -58,8 +58,8 @@ int main(int argc, char **argv)
 	{
 		for (int i = 0; i != NI; ++i)
 		{
-			x[i + j*NI] = j;
-			y[i + j*NI] = i;
+			x[i + j * NI] = j;
+			y[i + j * NI] = i;
 		}
 	}
 

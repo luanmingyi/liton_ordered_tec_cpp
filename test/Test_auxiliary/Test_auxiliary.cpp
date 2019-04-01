@@ -2,7 +2,7 @@
 # include <string>
 #include <typeinfo>
 using namespace std;
-# include "../../scr/liton_ordered_tec/ordered_tec.h"
+# include "ordered_tec.h"
 using namespace liton_ot;
 
 template<typename TEC, typename NUMT>

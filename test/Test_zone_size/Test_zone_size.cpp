@@ -2,7 +2,7 @@
 # include <fstream>
 # include <stdlib.h>
 using namespace std;
-# include "../../scr/liton_ordered_tec/ordered_tec.h"
+# include "ordered_tec.h"
 using namespace liton_ot;
 
 # define DATATYPE double
@@ -27,16 +27,16 @@ void get_size(TEC_FILE &tecfile, ostream &log)
 	log << "Dim: " << Dim << endl;
 }
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
-	DATATYPE *x, *y, *z, *w;
+	DATATYPE* x, *y, *z, *w;
 	size_t NI = 100, NJ = 200;
 	try
 	{
-		x = new DATATYPE[NI*NJ];
-		y = new DATATYPE[NI*NJ];
-		z = new DATATYPE[NI*NJ];
-		w = new DATATYPE[NI*NJ];
+		x = new DATATYPE[NI * NJ];
+		y = new DATATYPE[NI * NJ];
+		z = new DATATYPE[NI * NJ];
+		w = new DATATYPE[NI * NJ];
 	}
 	catch (...)
 	{
@@ -47,10 +47,10 @@ int main(int argc, char **argv)
 	{
 		for (int i = 0; i != NI; ++i)
 		{
-			x[i + j*NI] = j;
-			y[i + j*NI] = i;
-			z[i + j*NI] = 1 + i / 2 + j;
-			w[i + j*NI] = i + j;
+			x[i + j * NI] = j;
+			y[i + j * NI] = i;
+			z[i + j * NI] = 1 + i / 2 + j;
+			w[i + j * NI] = i + j;
 		}
 	}
 
@@ -84,7 +84,7 @@ int main(int argc, char **argv)
 	get_size(tecfile, log); log << endl;
 	tecfile.Zones[0].Begin[0] = 49;
 	tecfile.Zones[0].End[0] = 50;
-	
+
 	get_size(tecfile, log); log << endl;
 	tecfile.Zones[0].Max[1] = NJ;
 	get_size(tecfile, log); log << endl;
@@ -102,7 +102,7 @@ int main(int argc, char **argv)
 	tecfile.Zones[0].End[2] = 0;
 
 	get_size(tecfile, log); log << endl;
-	
+
 	tecfile.set_echo_mode("full", "full");
 
 	try

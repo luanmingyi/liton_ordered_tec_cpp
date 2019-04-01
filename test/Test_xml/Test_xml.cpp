@@ -2,21 +2,21 @@
 # include <fstream>
 # include <cstdlib>
 using namespace std;
-# include "../../scr/tinyxml2/tinyxml2.h"
-# include "../../scr/liton_ordered_tec/ordered_tec.h"
+# include "tinyxml2.h"
+# include "ordered_tec.h"
 using namespace liton_ot;
 
 # define DATATYPE double
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
-	DATATYPE *x, *y, *z, *w;
+	DATATYPE* x, *y, *z, *w;
 	size_t NI = 20, NJ = 40;
 	try
 	{
-		x = new DATATYPE[NI*NJ];
-		y = new DATATYPE[NI*NJ];
-		z = new DATATYPE[NI*NJ];
-		w = new DATATYPE[NI*NJ];
+		x = new DATATYPE[NI * NJ];
+		y = new DATATYPE[NI * NJ];
+		z = new DATATYPE[NI * NJ];
+		w = new DATATYPE[NI * NJ];
 	}
 	catch (...)
 	{
@@ -27,10 +27,10 @@ int main(int argc, char **argv)
 	{
 		for (int i = 0; i != NI; ++i)
 		{
-			x[i + j*NI] = j;
-			y[i + j*NI] = i;
-			z[i + j*NI] = 1 + i / 2 + j;
-			w[i + j*NI] = i + j;
+			x[i + j * NI] = j;
+			y[i + j * NI] = i;
+			z[i + j * NI] = 1 + i / 2 + j;
+			w[i + j * NI] = i + j;
 		}
 	}
 
@@ -88,7 +88,7 @@ int main(int argc, char **argv)
 		log.write_xml(out);
 		out.close();
 	}
-	catch (const std::exception& err)
+	catch (const std::exception &err)
 	{
 		cout << err.what() << endl;
 	}

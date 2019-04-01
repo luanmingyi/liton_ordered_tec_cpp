@@ -10,9 +10,9 @@
 #include<ctime>
 #include<cerrno>
 
-#include"../liton_cpp_snippets/lion_snippets.hpp"
+#include"lion_snippets.hpp"
 #ifdef OT_TINYXML
-	#include"../tinyxml2/tinyxml2.h"
+	#include"tinyxml2.h"
 #endif
 #include"ordered_tec.h"
 

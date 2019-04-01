@@ -3,23 +3,23 @@
 # include <fstream>
 # include <cmath>
 using namespace std;
-# include "../../scr/liton_ordered_tec/ordered_tec.h"
+# include "ordered_tec.h"
 using namespace liton_ot;
 
 # define DATATYPE double
 
-void write_plt(TEC_FILE & tecfile, ofstream &log)
+void write_plt(TEC_FILE &tecfile, ofstream &log)
 {
 	try
 	{
 		tecfile.write_plt(false);
 		tecfile.last_log.write_echo(log);
-		log << "speed: " 
-			<< (tecfile.Zones[0].get_real_max(0)
-				*tecfile.Zones[0].get_real_max(1)
-				*tecfile.Zones[0].get_real_max(2)) / tecfile.last_log.UsingTime 
-			<< " N/s"
-			<< endl;
+		log << "speed: "
+		    << (tecfile.Zones[0].get_real_max(0)
+		        *tecfile.Zones[0].get_real_max(1)
+		        *tecfile.Zones[0].get_real_max(2)) / tecfile.last_log.UsingTime
+		    << " N/s"
+		    << endl;
 	}
 	catch (runtime_error err)
 	{
@@ -28,15 +28,15 @@ void write_plt(TEC_FILE & tecfile, ofstream &log)
 	cout << "----------------------" << endl;
 }
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
-	DATATYPE *x, *y, *z;
+	DATATYPE* x, *y, *z;
 	size_t NI = 3000, NJ = 6000;
 	try
 	{
-		x = new DATATYPE[NI*NJ];
-		y = new DATATYPE[NI*NJ];
-		z = new DATATYPE[NI*NJ];
+		x = new DATATYPE[NI * NJ];
+		y = new DATATYPE[NI * NJ];
+		z = new DATATYPE[NI * NJ];
 	}
 	catch (...)
 	{
@@ -47,9 +47,9 @@ int main(int argc, char **argv)
 	{
 		for (int i = 0; i != NI; ++i)
 		{
-			x[i + j*NI] = j;
-			y[i + j*NI] = i;
-			z[i + j*NI] = sin(x[i + j*NI] / 1500) - cos(y[i + j*NI] / 3000);
+			x[i + j * NI] = j;
+			y[i + j * NI] = i;
+			z[i + j * NI] = sin(x[i + j * NI] / 1500) - cos(y[i + j * NI] / 3000);
 		}
 	}
 
@@ -67,7 +67,7 @@ int main(int argc, char **argv)
 
 	ofstream log("test_08.txt");
 
-	write_plt(tecfile,log);
+	write_plt(tecfile, log);
 
 	tecfile.Zones[0].Begin[1] = 200;
 	tecfile.Zones[0].End[1] = 200;

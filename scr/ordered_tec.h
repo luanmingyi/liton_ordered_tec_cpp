@@ -17,7 +17,7 @@
 #include<stdexcept>
 
 #ifdef OT_TINYXML
-	#include"../tinyxml2/tinyxml2.h"
+	#include"tinyxml2.h"
 #endif
 
 /**

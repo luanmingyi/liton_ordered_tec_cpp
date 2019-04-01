@@ -1,8 +1,4 @@
-*.bat
-
-pull.log
-push.log
+_build_win32/
 
 doc/eng/
-test/_build/
-.vscode/
+test/_build_win32/
